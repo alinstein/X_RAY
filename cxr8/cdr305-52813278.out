@@ -1,0 +1,1418 @@
+Using base prefix '/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/python/3.6.3'
+New python executable in /localscratch/alinjose.52813278.0/env/bin/python
+Installing setuptools, pip, wheel...done.
+Ignoring pip: markers 'python_version < "3"' don't match your environment
+Collecting pip
+  Using cached https://files.pythonhosted.org/packages/4e/5f/528232275f6509b1fff703c9280e58951a81abe24640905de621c9f81839/pip-20.2.3-py2.py3-none-any.whl
+Installing collected packages: pip
+  Found existing installation: pip 9.0.1
+    Uninstalling pip-9.0.1:
+      Successfully uninstalled pip-9.0.1
+Successfully installed pip-20.2.3
+Looking in links: /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/avx2, /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/generic, /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+Ignoring pip: markers 'python_version < "3"' don't match your environment
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/absl_py-0.7.1-py3-none-any.whl
+Collecting appnope==0.1.0
+  Using cached appnope-0.1.0-py2.py3-none-any.whl (4.0 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/astor-0.7.1-py2.py3-none-any.whl
+Processing /home/alinjose/.cache/pip/wheels/91/07/fd/99884826d575c769102ddec2f9b96c7ad57cc6b5ca3a5e02b4/autopep8-1.4.3-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/backcall-0.1.0-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/cloudpickle-0.8.0-py2.py3-none-any.whl
+Processing /home/alinjose/.cache/pip/wheels/b2/0f/fa/faf1ddc5dbe2fbd858f0d53fa7cc7b5f060d9986a3e1f18810/cPython-0.0.6-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/cycler-0.10.0-py3-none-any.whl
+Collecting dask==1.1.1
+  Using cached dask-1.1.1-py2.py3-none-any.whl (701 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/decorator-4.3.2-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/easydict-1.9-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/gast-0.2.2-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/grpcio-1.17.1-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/avx2/h5py-2.9.0-cp36-cp36m-linux_x86_64.whl
+Collecting ipython==7.2.0
+  Using cached ipython-7.2.0-py3-none-any.whl (765 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/ipython_genutils-0.2.0-py2.py3-none-any.whl
+Collecting jedi==0.13.2
+  Using cached jedi-0.13.2-py2.py3-none-any.whl (177 kB)
+Collecting Keras-Applications==1.0.7
+  Using cached Keras_Applications-1.0.7-py2.py3-none-any.whl (51 kB)
+Collecting Keras-Preprocessing==1.0.9
+  Using cached Keras_Preprocessing-1.0.9-py2.py3-none-any.whl (59 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/generic/kiwisolver-1.0.1-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/Markdown-3.0.1-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/generic/matplotlib-3.0.2-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/mock-2.0.0-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/networkx-2.2-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/generic/numpy-1.16.0-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pandas-1.1.3-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/parso-0.3.4-py2.py3-none-any.whl
+Collecting pbr==5.1.2
+  Using cached pbr-5.1.2-py2.py3-none-any.whl (107 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pexpect-4.6.0-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pickleshare-0.7.5-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/Pillow-5.4.1-cp36-cp36m-linux_x86_64.whl
+Collecting prompt-toolkit==2.0.8
+  Using cached prompt_toolkit-2.0.8-py3-none-any.whl (342 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/generic/protobuf-3.6.1-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/ptyprocess-0.6.0-py3-none-any.whl
+Collecting pycodestyle==2.5.0
+  Using cached pycodestyle-2.5.0-py2.py3-none-any.whl (51 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/Pygments-2.3.1-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pyparsing-2.3.1-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/python_dateutil-2.8.0-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/PyWavelets-1.0.1-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/scikit_image-0.14.2-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/scikit_learn-0.23.0-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/nix/generic/scipy-1.2.1-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/six-1.12.0-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/tensorboard-1.12.2-py3-none-any.whl
+Collecting tensorboardX==1.6
+  Using cached tensorboardX-1.6-py2.py3-none-any.whl (129 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/tensorflow_gpu-2.3.0-cp36-cp36m-linux_x86_64.whl
+Collecting tensorflow-estimator==1.13.0rc0
+  Using cached tensorflow_estimator-1.13.0rc0-py2.py3-none-any.whl (367 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/termcolor-1.1.0-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/toolz-0.9.0-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/torchvision-0.2.1-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/tqdm-4.31.1-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/traitlets-4.3.2-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/wcwidth-0.1.7-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/Werkzeug-0.14.1-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/opencv_python-3.4.4.19-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/requests-2.24.0-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pymongo-3.9.0-cp36-cp36m-linux_x86_64.whl
+Requirement already satisfied: setuptools>=18.5 in /localscratch/alinjose.52813278.0/env/lib/python3.6/site-packages (from ipython==7.2.0->-r /home/alinjose/scratch/alinjose/final_project/covid_19/requirements.txt (line 16)) (28.8.0)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pytz-2020.1-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/joblib-0.17.0-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/threadpoolctl-2.1.0-py3-none-any.whl
+Requirement already satisfied: wheel>=0.26; python_version >= "3" in /localscratch/alinjose.52813278.0/env/lib/python3.6/site-packages (from tensorboard==1.12.2->-r /home/alinjose/scratch/alinjose/final_project/covid_19/requirements.txt (line 45)) (0.29.0)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/wrapt-1.11.2-cp36-cp36m-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/astunparse-1.6.3-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/opt_einsum-3.3.0-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/google_pasta-0.2.0-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/urllib3-1.25.10-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/idna-2.10-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/chardet-3.0.4-py2.py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/certifi-2020.6.20-py2.py3-none-any.whl
+Installing collected packages: six, absl-py, appnope, astor, pycodestyle, autopep8, backcall, cloudpickle, urllib3, idna, chardet, certifi, requests, pymongo, Cpython, cycler, dask, decorator, easydict, gast, grpcio, numpy, h5py, ptyprocess, pexpect, parso, jedi, ipython-genutils, traitlets, wcwidth, prompt-toolkit, pickleshare, Pygments, ipython, Keras-Applications, Keras-Preprocessing, kiwisolver, Markdown, python-dateutil, pyparsing, matplotlib, pbr, mock, networkx, pytz, pandas, Pillow, protobuf, PyWavelets, scikit-image, joblib, threadpoolctl, scipy, scikit-learn, Werkzeug, tensorboard, tensorboardX, wrapt, astunparse, tensorflow-estimator, opt-einsum, termcolor, google-pasta, tensorflow-gpu, toolz, torch, torchvision, tqdm, opencv-python
+ERROR: After October 2020 you may experience errors when installing or updating packages. This is because pip will change the way that it resolves dependency conflicts.
+
+We recommend you use --use-feature=2020-resolver to test your packages with the new resolver before it becomes the default.
+
+tensorflow-gpu 2.3.0 requires gast==0.3.3, but you'll have gast 0.2.2 which is incompatible.
+tensorflow-gpu 2.3.0 requires h5py<2.11.0,>=2.10.0, but you'll have h5py 2.9.0 which is incompatible.
+tensorflow-gpu 2.3.0 requires keras-preprocessing<1.2,>=1.1.1, but you'll have keras-preprocessing 1.0.9 which is incompatible.
+tensorflow-gpu 2.3.0 requires protobuf>=3.9.2, but you'll have protobuf 3.6.1 which is incompatible.
+tensorflow-gpu 2.3.0 requires scipy==1.4.1, but you'll have scipy 1.2.1 which is incompatible.
+tensorflow-gpu 2.3.0 requires tensorboard<3,>=2.3.0, but you'll have tensorboard 1.12.2 which is incompatible.
+tensorflow-gpu 2.3.0 requires tensorflow-estimator<2.4.0,>=2.3.0, but you'll have tensorflow-estimator 1.13.0rc0 which is incompatible.
+Successfully installed Cpython-0.0.6 Keras-Applications-1.0.7 Keras-Preprocessing-1.0.9 Markdown-3.0.1 Pillow-5.4.1 PyWavelets-1.0.1 Pygments-2.3.1 Werkzeug-0.14.1 absl-py-0.7.1 appnope-0.1.0 astor-0.7.1 astunparse-1.6.3 autopep8-1.4.3 backcall-0.1.0 certifi-2020.6.20 chardet-3.0.4 cloudpickle-0.8.0 cycler-0.10.0 dask-1.1.1 decorator-4.3.2 easydict-1.9 gast-0.2.2 google-pasta-0.2.0 grpcio-1.17.1 h5py-2.9.0 idna-2.10 ipython-7.2.0 ipython-genutils-0.2.0 jedi-0.13.2 joblib-0.17.0 kiwisolver-1.0.1 matplotlib-3.0.2 mock-2.0.0 networkx-2.2 numpy-1.16.0 opencv-python-3.4.4.19 opt-einsum-3.3.0 pandas-1.1.3 parso-0.3.4 pbr-5.1.2 pexpect-4.6.0 pickleshare-0.7.5 prompt-toolkit-2.0.8 protobuf-3.6.1 ptyprocess-0.6.0 pycodestyle-2.5.0 pymongo-3.9.0 pyparsing-2.3.1 python-dateutil-2.8.0 pytz-2020.1 requests-2.24.0 scikit-image-0.14.2 scikit-learn-0.23.0 scipy-1.2.1 six-1.12.0 tensorboard-1.12.2 tensorboardX-1.6 tensorflow-estimator-1.13.0rc0 tensorflow-gpu-2.3.0 termcolor-1.1.0 threadpoolctl-2.1.0 toolz-0.9.0 torch-1.0.1.post2 torchvision-0.2.1 tqdm-4.31.1 traitlets-4.3.2 urllib3-1.25.10 wcwidth-0.1.7 wrapt-1.11.2
+{'train': 75714, 'val': 10810}
+Checkpoint found! Resuming
+best_auc_ave 0.796518772906996
+Epoch 10/44
+----------
+/localscratch/alinjose.52813278.0/env/lib/python3.6/site-packages/torchvision/models/densenet.py:212: UserWarning: nn.init.kaiming_normal is now deprecated in favor of nn.init.kaiming_normal_.
+  nn.init.kaiming_normal(m.weight.data)
+train Loss: 6.2614 AUC: 0.8780  
+
+Atelectasis: 0.8498  
+Cardiomegaly: 0.9610  
+Effusion: 0.9162  
+Infiltration: 0.7288  
+Mass: 0.9196  
+Nodule: 0.8370  
+Pneumonia: 0.8766  
+Pneumothorax: 0.9347  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.8779607948307664
+epoch_auc [0.84982541 0.96097461 0.91623265 0.72877222 0.91958686 0.83701613
+ 0.87662202 0.93465647]
+phase train
+val Loss: 8.5271 AUC: 0.7837  
+
+Atelectasis: 0.7969  
+Cardiomegaly: 0.8746  
+Effusion: 0.8889  
+Infiltration: 0.6979  
+Mass: 0.7900  
+Nodule: 0.7179  
+Pneumonia: 0.6912  
+Pneumothorax: 0.8122  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7836999688512618
+epoch_auc [0.79685194 0.87456024 0.88888767 0.69792773 0.79003072 0.7179357
+ 0.69117083 0.81223492]
+phase val
+
+Epoch 11/44
+----------
+train Loss: 6.0448 AUC: 0.8872  
+
+Atelectasis: 0.8560  
+Cardiomegaly: 0.9668  
+Effusion: 0.9193  
+Infiltration: 0.7347  
+Mass: 0.9287  
+Nodule: 0.8521  
+Pneumonia: 0.8966  
+Pneumothorax: 0.9436  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.8872303467953115
+epoch_auc [0.85601497 0.96683569 0.91927886 0.73467415 0.92870448 0.85211196
+ 0.89659154 0.94363112]
+phase train
+val Loss: 8.4150 AUC: 0.7830  
+
+Atelectasis: 0.7926  
+Cardiomegaly: 0.8790  
+Effusion: 0.8827  
+Infiltration: 0.7013  
+Mass: 0.7960  
+Nodule: 0.7258  
+Pneumonia: 0.6746  
+Pneumothorax: 0.8118  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7829707086019286
+epoch_auc [0.79261093 0.87896929 0.88271093 0.70127732 0.7959996  0.72582544
+ 0.67455862 0.81181355]
+phase val
+
+Epoch 12/44
+----------
+train Loss: 5.8488 AUC: 0.8955  
+
+Atelectasis: 0.8598  
+Cardiomegaly: 0.9715  
+Effusion: 0.9244  
+Infiltration: 0.7367  
+Mass: 0.9380  
+Nodule: 0.8642  
+Pneumonia: 0.9164  
+Pneumothorax: 0.9528  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.8954688117884881
+epoch_auc [0.85981053 0.97150054 0.92438126 0.7367274  0.93800018 0.86418512
+ 0.91638821 0.95275725]
+phase train
+val Loss: 8.7116 AUC: 0.7831  
+
+Atelectasis: 0.7867  
+Cardiomegaly: 0.8629  
+Effusion: 0.8862  
+Infiltration: 0.6909  
+Mass: 0.8113  
+Nodule: 0.7114  
+Pneumonia: 0.7107  
+Pneumothorax: 0.8048  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.783114573368406
+epoch_auc [0.78667138 0.86286135 0.88620196 0.69089279 0.81133497 0.71137606
+ 0.71074119 0.80483688]
+phase val
+
+Epoch 13/44
+----------
+train Loss: 5.6489 AUC: 0.9028  
+
+Atelectasis: 0.8698  
+Cardiomegaly: 0.9751  
+Effusion: 0.9285  
+Infiltration: 0.7455  
+Mass: 0.9453  
+Nodule: 0.8771  
+Pneumonia: 0.9227  
+Pneumothorax: 0.9588  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9028395154605799
+epoch_auc [0.86975803 0.97512475 0.92848254 0.74545589 0.94529336 0.87712861
+ 0.92266708 0.95880587]
+phase train
+val Loss: 9.0088 AUC: 0.7774  
+
+Atelectasis: 0.7896  
+Cardiomegaly: 0.8684  
+Effusion: 0.8819  
+Infiltration: 0.6975  
+Mass: 0.8002  
+Nodule: 0.7085  
+Pneumonia: 0.6853  
+Pneumothorax: 0.7877  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7773901514817294
+epoch_auc [0.78958649 0.86842759 0.88190455 0.69749162 0.80018189 0.7085244
+ 0.68527011 0.78773457]
+phase val
+
+Epoch 14/44
+----------
+train Loss: 5.4218 AUC: 0.9112  
+
+Atelectasis: 0.8773  
+Cardiomegaly: 0.9786  
+Effusion: 0.9319  
+Infiltration: 0.7531  
+Mass: 0.9490  
+Nodule: 0.8896  
+Pneumonia: 0.9454  
+Pneumothorax: 0.9650  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9112097060296593
+epoch_auc [0.87726846 0.97855119 0.93188405 0.75305059 0.94899107 0.88956954
+ 0.94539775 0.964965  ]
+phase train
+val Loss: 9.4956 AUC: 0.7746  
+
+Atelectasis: 0.7840  
+Cardiomegaly: 0.8657  
+Effusion: 0.8860  
+Infiltration: 0.6984  
+Mass: 0.7873  
+Nodule: 0.7070  
+Pneumonia: 0.6665  
+Pneumothorax: 0.8017  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7745923286022006
+epoch_auc [0.78404687 0.86573344 0.88598114 0.69838187 0.78734889 0.70703238
+ 0.66650592 0.80170811]
+phase val
+
+Epoch 15/44
+----------
+train Loss: 5.2274 AUC: 0.9173  
+
+Atelectasis: 0.8841  
+Cardiomegaly: 0.9802  
+Effusion: 0.9357  
+Infiltration: 0.7587  
+Mass: 0.9553  
+Nodule: 0.9021  
+Pneumonia: 0.9523  
+Pneumothorax: 0.9699  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9172812540166234
+epoch_auc [0.88405096 0.98024887 0.93565685 0.7587082  0.95528172 0.90212742
+ 0.95226807 0.96990794]
+phase train
+val Loss: 10.0252 AUC: 0.7709  
+
+Atelectasis: 0.7814  
+Cardiomegaly: 0.8666  
+Effusion: 0.8784  
+Infiltration: 0.6893  
+Mass: 0.7802  
+Nodule: 0.7083  
+Pneumonia: 0.6704  
+Pneumothorax: 0.7926  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7709008730590298
+epoch_auc [0.78140895 0.86658392 0.87840916 0.68927601 0.78024652 0.70828873
+ 0.67037768 0.79261601]
+phase val
+
+Epoch 16/44
+----------
+train Loss: 5.0657 AUC: 0.9221  
+
+Atelectasis: 0.8897  
+Cardiomegaly: 0.9828  
+Effusion: 0.9381  
+Infiltration: 0.7655  
+Mass: 0.9599  
+Nodule: 0.9102  
+Pneumonia: 0.9578  
+Pneumothorax: 0.9728  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.922096817757244
+epoch_auc [0.88968365 0.98275818 0.93811516 0.76554244 0.95991696 0.9101622
+ 0.95780639 0.97278956]
+phase train
+val Loss: 9.4147 AUC: 0.7776  
+
+Atelectasis: 0.7863  
+Cardiomegaly: 0.8608  
+Effusion: 0.8810  
+Infiltration: 0.6890  
+Mass: 0.7941  
+Nodule: 0.7114  
+Pneumonia: 0.7146  
+Pneumothorax: 0.7836  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7775924253166298
+epoch_auc [0.78631116 0.86080452 0.88104233 0.68896859 0.794055   0.71137844
+ 0.71460392 0.78357544]
+phase val
+
+Epoch 17/44
+----------
+train Loss: 4.9018 AUC: 0.9278  
+
+Atelectasis: 0.8964  
+Cardiomegaly: 0.9839  
+Effusion: 0.9415  
+Infiltration: 0.7724  
+Mass: 0.9623  
+Nodule: 0.9204  
+Pneumonia: 0.9705  
+Pneumothorax: 0.9754  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9278431187546485
+epoch_auc [0.89638129 0.98386176 0.94149173 0.77237221 0.96231829 0.92038219
+ 0.97049744 0.97544004]
+phase train
+val Loss: 10.0986 AUC: 0.7769  
+
+Atelectasis: 0.7839  
+Cardiomegaly: 0.8508  
+Effusion: 0.8801  
+Infiltration: 0.6935  
+Mass: 0.7961  
+Nodule: 0.7086  
+Pneumonia: 0.6977  
+Pneumothorax: 0.8047  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7769273582082562
+epoch_auc [0.78387955 0.85078008 0.88010215 0.69347728 0.79610307 0.70864795
+ 0.69770139 0.80472741]
+phase val
+
+Epoch 18/44
+----------
+train Loss: 4.6632 AUC: 0.9333  
+
+Atelectasis: 0.9047  
+Cardiomegaly: 0.9875  
+Effusion: 0.9471  
+Infiltration: 0.7807  
+Mass: 0.9685  
+Nodule: 0.9286  
+Pneumonia: 0.9699  
+Pneumothorax: 0.9794  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9332999577518548
+epoch_auc [0.9046505  0.98752128 0.94705732 0.78069888 0.96853026 0.92856194
+ 0.96993915 0.97944033]
+phase train
+val Loss: 10.6560 AUC: 0.7731  
+
+Atelectasis: 0.7828  
+Cardiomegaly: 0.8577  
+Effusion: 0.8849  
+Infiltration: 0.6861  
+Mass: 0.8005  
+Nodule: 0.6950  
+Pneumonia: 0.6938  
+Pneumothorax: 0.7837  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7730673857315946
+epoch_auc [0.78280494 0.85773972 0.88487446 0.68609479 0.80049559 0.6950343
+ 0.6938444  0.78365089]
+phase val
+
+Epoch 19/44
+----------
+train Loss: 4.5158 AUC: 0.9378  
+
+Atelectasis: 0.9110  
+Cardiomegaly: 0.9885  
+Effusion: 0.9479  
+Infiltration: 0.7901  
+Mass: 0.9696  
+Nodule: 0.9351  
+Pneumonia: 0.9787  
+Pneumothorax: 0.9814  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9377916203758725
+epoch_auc [0.91099084 0.98851183 0.94785489 0.79007631 0.96960704 0.93512857
+ 0.97871998 0.98144351]
+phase train
+val Loss: 11.9971 AUC: 0.7728  
+
+Atelectasis: 0.7848  
+Cardiomegaly: 0.8616  
+Effusion: 0.8851  
+Infiltration: 0.6861  
+Mass: 0.8015  
+Nodule: 0.7042  
+Pneumonia: 0.6711  
+Pneumothorax: 0.7880  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7728067484322712
+epoch_auc [0.78478902 0.86164196 0.88512692 0.68608343 0.8014872  0.70423127
+ 0.67112316 0.78797102]
+phase val
+
+Epoch 20/44
+----------
+train Loss: 4.3274 AUC: 0.9421  
+
+Atelectasis: 0.9170  
+Cardiomegaly: 0.9890  
+Effusion: 0.9516  
+Infiltration: 0.7957  
+Mass: 0.9732  
+Nodule: 0.9445  
+Pneumonia: 0.9818  
+Pneumothorax: 0.9842  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9421331899848051
+epoch_auc [0.91699539 0.98900169 0.95162274 0.79574953 0.97318046 0.94453351
+ 0.98175299 0.98422921]
+phase train
+val Loss: 11.0934 AUC: 0.7728  
+
+Atelectasis: 0.7844  
+Cardiomegaly: 0.8727  
+Effusion: 0.8777  
+Infiltration: 0.6852  
+Mass: 0.7980  
+Nodule: 0.7009  
+Pneumonia: 0.6835  
+Pneumothorax: 0.7803  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7728422682369573
+epoch_auc [0.78444978 0.87268742 0.87774463 0.68516955 0.79799396 0.70093384
+ 0.68349047 0.78026849]
+phase val
+
+Epoch 21/44
+----------
+train Loss: 4.1630 AUC: 0.9466  
+
+Atelectasis: 0.9242  
+Cardiomegaly: 0.9909  
+Effusion: 0.9545  
+Infiltration: 0.8092  
+Mass: 0.9752  
+Nodule: 0.9494  
+Pneumonia: 0.9843  
+Pneumothorax: 0.9854  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9466330905420921
+epoch_auc [0.9241873  0.99092043 0.95446609 0.8091521  0.97519918 0.94935292
+ 0.9843462  0.98544049]
+phase train
+val Loss: 12.1728 AUC: 0.7684  
+
+Atelectasis: 0.7697  
+Cardiomegaly: 0.8672  
+Effusion: 0.8757  
+Infiltration: 0.6818  
+Mass: 0.7937  
+Nodule: 0.7007  
+Pneumonia: 0.6711  
+Pneumothorax: 0.7876  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7684403321752166
+epoch_auc [0.76973615 0.86717426 0.87569492 0.6818385  0.79372199 0.70068614
+ 0.67106985 0.78760085]
+phase val
+
+Epoch 22/44
+----------
+train Loss: 4.0080 AUC: 0.9502  
+
+Atelectasis: 0.9295  
+Cardiomegaly: 0.9907  
+Effusion: 0.9578  
+Infiltration: 0.8196  
+Mass: 0.9765  
+Nodule: 0.9529  
+Pneumonia: 0.9874  
+Pneumothorax: 0.9874  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9502110777233268
+epoch_auc [0.92947861 0.99071417 0.95777367 0.8196093  0.97648027 0.95285962
+ 0.98737805 0.98739492]
+phase train
+val Loss: 12.9341 AUC: 0.7667  
+
+Atelectasis: 0.7790  
+Cardiomegaly: 0.8678  
+Effusion: 0.8752  
+Infiltration: 0.6664  
+Mass: 0.7863  
+Nodule: 0.7113  
+Pneumonia: 0.6561  
+Pneumothorax: 0.7915  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7666956040312258
+epoch_auc [0.77897462 0.86775895 0.87520463 0.66639769 0.78629106 0.71129985
+ 0.65611755 0.79152048]
+phase val
+
+Epoch 23/44
+----------
+train Loss: 3.8768 AUC: 0.9532  
+
+Atelectasis: 0.9359  
+Cardiomegaly: 0.9918  
+Effusion: 0.9591  
+Infiltration: 0.8262  
+Mass: 0.9786  
+Nodule: 0.9578  
+Pneumonia: 0.9885  
+Pneumothorax: 0.9878  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.95322950283007
+epoch_auc [0.93589157 0.99184771 0.95914823 0.82616483 0.97863515 0.95784169
+ 0.98850362 0.98780322]
+phase train
+val Loss: 13.4295 AUC: 0.7616  
+
+Atelectasis: 0.7707  
+Cardiomegaly: 0.8632  
+Effusion: 0.8755  
+Infiltration: 0.6714  
+Mass: 0.7847  
+Nodule: 0.6896  
+Pneumonia: 0.6693  
+Pneumothorax: 0.7682  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7615552510369066
+epoch_auc [0.77065402 0.86318241 0.87545135 0.67143235 0.78467375 0.68958001
+ 0.66925494 0.76821317]
+phase val
+
+Epoch 24/44
+----------
+train Loss: 3.7112 AUC: 0.9570  
+
+Atelectasis: 0.9388  
+Cardiomegaly: 0.9924  
+Effusion: 0.9615  
+Infiltration: 0.8406  
+Mass: 0.9803  
+Nodule: 0.9625  
+Pneumonia: 0.9907  
+Pneumothorax: 0.9893  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9569986174215765
+epoch_auc [0.93875696 0.99240666 0.96145345 0.84063886 0.98027182 0.96248859
+ 0.99071192 0.98926068]
+phase train
+val Loss: 13.2583 AUC: 0.7601  
+
+Atelectasis: 0.7729  
+Cardiomegaly: 0.8536  
+Effusion: 0.8774  
+Infiltration: 0.6779  
+Mass: 0.7893  
+Nodule: 0.7083  
+Pneumonia: 0.6288  
+Pneumothorax: 0.7728  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7601137679065345
+epoch_auc [0.77289164 0.85356385 0.87735341 0.67790533 0.78934379 0.70829457
+ 0.62877416 0.77278338]
+phase val
+
+Epoch 25/44
+----------
+train Loss: 3.5599 AUC: 0.9602  
+
+Atelectasis: 0.9444  
+Cardiomegaly: 0.9930  
+Effusion: 0.9636  
+Infiltration: 0.8483  
+Mass: 0.9826  
+Nodule: 0.9658  
+Pneumonia: 0.9925  
+Pneumothorax: 0.9911  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9601563216048126
+epoch_auc [0.94443936 0.99301461 0.96360381 0.84825107 0.98260612 0.9657677
+ 0.99247597 0.99109193]
+phase train
+val Loss: 13.8949 AUC: 0.7571  
+
+Atelectasis: 0.7787  
+Cardiomegaly: 0.8598  
+Effusion: 0.8741  
+Infiltration: 0.6377  
+Mass: 0.7859  
+Nodule: 0.6928  
+Pneumonia: 0.6530  
+Pneumothorax: 0.7751  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7571360645556309
+epoch_auc [0.77869211 0.8597822  0.8741046  0.63766215 0.7859398  0.69282257
+ 0.65299866 0.77508643]
+phase val
+
+Epoch 26/44
+----------
+train Loss: 3.4207 AUC: 0.9634  
+
+Atelectasis: 0.9482  
+Cardiomegaly: 0.9934  
+Effusion: 0.9655  
+Infiltration: 0.8610  
+Mass: 0.9838  
+Nodule: 0.9697  
+Pneumonia: 0.9933  
+Pneumothorax: 0.9919  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9633553393776938
+epoch_auc [0.94824582 0.99340734 0.96549464 0.86099864 0.98380213 0.96967874
+ 0.99332358 0.99189182]
+phase train
+val Loss: 14.0089 AUC: 0.7617  
+
+Atelectasis: 0.7692  
+Cardiomegaly: 0.8585  
+Effusion: 0.8696  
+Infiltration: 0.6665  
+Mass: 0.7860  
+Nodule: 0.6969  
+Pneumonia: 0.6683  
+Pneumothorax: 0.7783  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7616559913583237
+epoch_auc [0.76920396 0.85847841 0.86955407 0.66651382 0.7859971  0.69688934
+ 0.66833642 0.77827482]
+phase val
+
+Epoch 27/44
+----------
+train Loss: 3.3233 AUC: 0.9654  
+
+Atelectasis: 0.9512  
+Cardiomegaly: 0.9941  
+Effusion: 0.9681  
+Infiltration: 0.8700  
+Mass: 0.9832  
+Nodule: 0.9715  
+Pneumonia: 0.9935  
+Pneumothorax: 0.9918  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9654314387396037
+epoch_auc [0.95120177 0.99408583 0.96811272 0.8700112  0.98318975 0.97150444
+ 0.99352993 0.99181588]
+phase train
+val Loss: 15.2963 AUC: 0.7580  
+
+Atelectasis: 0.7641  
+Cardiomegaly: 0.8472  
+Effusion: 0.8683  
+Infiltration: 0.6655  
+Mass: 0.7836  
+Nodule: 0.7002  
+Pneumonia: 0.6758  
+Pneumothorax: 0.7591  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7579723466729907
+epoch_auc [0.76407539 0.84718019 0.86829904 0.665503   0.78357835 0.70020007
+ 0.67580601 0.75913673]
+phase val
+
+Epoch 28/44
+----------
+train Loss: 3.1950 AUC: 0.9677  
+
+Atelectasis: 0.9560  
+Cardiomegaly: 0.9949  
+Effusion: 0.9692  
+Infiltration: 0.8767  
+Mass: 0.9853  
+Nodule: 0.9737  
+Pneumonia: 0.9931  
+Pneumothorax: 0.9928  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9677017407965157
+epoch_auc [0.95597969 0.99486426 0.96915593 0.87668283 0.98534529 0.97370497
+ 0.99308369 0.99279727]
+phase train
+val Loss: 15.4836 AUC: 0.7604  
+
+Atelectasis: 0.7719  
+Cardiomegaly: 0.8592  
+Effusion: 0.8785  
+Infiltration: 0.6623  
+Mass: 0.7787  
+Nodule: 0.7006  
+Pneumonia: 0.6620  
+Pneumothorax: 0.7700  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7603855629460108
+epoch_auc [0.77185237 0.85918446 0.87846799 0.66232844 0.77870222 0.70059791
+ 0.66195512 0.76999599]
+phase val
+
+Epoch 29/44
+----------
+train Loss: 3.1019 AUC: 0.9696  
+
+Atelectasis: 0.9582  
+Cardiomegaly: 0.9945  
+Effusion: 0.9695  
+Infiltration: 0.8866  
+Mass: 0.9860  
+Nodule: 0.9749  
+Pneumonia: 0.9943  
+Pneumothorax: 0.9930  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9696228919635994
+epoch_auc [0.95818138 0.99449158 0.9694657  0.88664347 0.98602349 0.97491117
+ 0.99428942 0.99297693]
+phase train
+val Loss: 17.4424 AUC: 0.7572  
+
+Atelectasis: 0.7679  
+Cardiomegaly: 0.8548  
+Effusion: 0.8708  
+Infiltration: 0.6639  
+Mass: 0.7654  
+Nodule: 0.6851  
+Pneumonia: 0.6936  
+Pneumothorax: 0.7563  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7572283287497992
+epoch_auc [0.76792753 0.85478846 0.87084029 0.66387184 0.76539507 0.68514835
+ 0.69355982 0.75629527]
+phase val
+
+Epoch 30/44
+----------
+train Loss: 2.9138 AUC: 0.9728  
+
+Atelectasis: 0.9632  
+Cardiomegaly: 0.9952  
+Effusion: 0.9724  
+Infiltration: 0.8946  
+Mass: 0.9876  
+Nodule: 0.9792  
+Pneumonia: 0.9956  
+Pneumothorax: 0.9944  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9727837834130204
+epoch_auc [0.96324994 0.99523319 0.97241081 0.89455849 0.98762683 0.97920464
+ 0.99563006 0.99435629]
+phase train
+val Loss: 17.2595 AUC: 0.7526  
+
+Atelectasis: 0.7514  
+Cardiomegaly: 0.8449  
+Effusion: 0.8700  
+Infiltration: 0.6561  
+Mass: 0.7770  
+Nodule: 0.7001  
+Pneumonia: 0.6623  
+Pneumothorax: 0.7593  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7526352277628929
+epoch_auc [0.75144537 0.84486843 0.87001026 0.65606564 0.77699195 0.70010692
+ 0.66229956 0.75929369]
+phase val
+
+Epoch 31/44
+----------
+train Loss: 2.8189 AUC: 0.9748  
+
+Atelectasis: 0.9653  
+Cardiomegaly: 0.9959  
+Effusion: 0.9743  
+Infiltration: 0.9045  
+Mass: 0.9883  
+Nodule: 0.9795  
+Pneumonia: 0.9965  
+Pneumothorax: 0.9944  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9748301224534001
+epoch_auc [0.9652819  0.99585608 0.97429094 0.90450149 0.98825284 0.97954746
+ 0.99646959 0.99444069]
+phase train
+val Loss: 15.8957 AUC: 0.7492  
+
+Atelectasis: 0.7471  
+Cardiomegaly: 0.8504  
+Effusion: 0.8591  
+Infiltration: 0.6412  
+Mass: 0.7859  
+Nodule: 0.6941  
+Pneumonia: 0.6532  
+Pneumothorax: 0.7625  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7491713039378892
+epoch_auc [0.7470528  0.85035114 0.859098   0.64124648 0.78587835 0.69406316
+ 0.65317417 0.76250633]
+phase val
+
+Epoch 32/44
+----------
+train Loss: 2.7824 AUC: 0.9755  
+
+Atelectasis: 0.9658  
+Cardiomegaly: 0.9952  
+Effusion: 0.9748  
+Infiltration: 0.9094  
+Mass: 0.9890  
+Nodule: 0.9805  
+Pneumonia: 0.9957  
+Pneumothorax: 0.9940  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9755481632762133
+epoch_auc [0.96580271 0.99520737 0.97477189 0.90942186 0.98899473 0.98050751
+ 0.99569331 0.99398592]
+phase train
+val Loss: 17.0069 AUC: 0.7502  
+
+Atelectasis: 0.7569  
+Cardiomegaly: 0.8398  
+Effusion: 0.8715  
+Infiltration: 0.6502  
+Mass: 0.7862  
+Nodule: 0.6820  
+Pneumonia: 0.6363  
+Pneumothorax: 0.7785  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7501833778856017
+epoch_auc [0.75693885 0.8397792  0.87147588 0.65021412 0.78622017 0.6819577
+ 0.63634052 0.77854058]
+phase val
+
+Epoch 33/44
+----------
+train Loss: 2.6621 AUC: 0.9777  
+
+Atelectasis: 0.9686  
+Cardiomegaly: 0.9958  
+Effusion: 0.9756  
+Infiltration: 0.9182  
+Mass: 0.9894  
+Nodule: 0.9830  
+Pneumonia: 0.9968  
+Pneumothorax: 0.9944  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9777319788135503
+epoch_auc [0.96856634 0.99581407 0.97558507 0.91820105 0.98943957 0.98295251
+ 0.99684852 0.99444871]
+phase train
+val Loss: 16.7795 AUC: 0.7538  
+
+Atelectasis: 0.7635  
+Cardiomegaly: 0.8506  
+Effusion: 0.8624  
+Infiltration: 0.6611  
+Mass: 0.7761  
+Nodule: 0.6932  
+Pneumonia: 0.6508  
+Pneumothorax: 0.7723  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7537528192324284
+epoch_auc [0.76350829 0.85058388 0.86236826 0.66112249 0.77613045 0.69315469
+ 0.65084586 0.77230863]
+phase val
+
+Epoch 34/44
+----------
+train Loss: 2.5522 AUC: 0.9793  
+
+Atelectasis: 0.9722  
+Cardiomegaly: 0.9963  
+Effusion: 0.9774  
+Infiltration: 0.9232  
+Mass: 0.9903  
+Nodule: 0.9828  
+Pneumonia: 0.9964  
+Pneumothorax: 0.9953  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9792545361618943
+epoch_auc [0.97221505 0.99628811 0.97742975 0.92317609 0.99033489 0.98280136
+ 0.99644563 0.9953454 ]
+phase train
+val Loss: 17.0524 AUC: 0.7522  
+
+Atelectasis: 0.7471  
+Cardiomegaly: 0.8497  
+Effusion: 0.8642  
+Infiltration: 0.6543  
+Mass: 0.8018  
+Nodule: 0.7094  
+Pneumonia: 0.6382  
+Pneumothorax: 0.7527  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7521855503313595
+epoch_auc [0.74711438 0.84974688 0.86423224 0.65430608 0.80181608 0.7093586
+ 0.63819398 0.75271616]
+phase val
+
+Epoch 35/44
+----------
+train Loss: 2.4444 AUC: 0.9810  
+
+Atelectasis: 0.9744  
+Cardiomegaly: 0.9960  
+Effusion: 0.9783  
+Infiltration: 0.9298  
+Mass: 0.9910  
+Nodule: 0.9857  
+Pneumonia: 0.9973  
+Pneumothorax: 0.9955  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9810136058523475
+epoch_auc [0.97442634 0.99595924 0.9783401  0.92983912 0.99101932 0.98571814
+ 0.99725709 0.99554949]
+phase train
+val Loss: 17.8711 AUC: 0.7487  
+
+Atelectasis: 0.7550  
+Cardiomegaly: 0.8428  
+Effusion: 0.8767  
+Infiltration: 0.6547  
+Mass: 0.7889  
+Nodule: 0.6945  
+Pneumonia: 0.6508  
+Pneumothorax: 0.7262  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7486893042118528
+epoch_auc [0.75498363 0.84278201 0.8766532  0.65468235 0.78892461 0.69448928
+ 0.65084053 0.72615881]
+phase val
+
+Epoch 36/44
+----------
+train Loss: 2.3893 AUC: 0.9818  
+
+Atelectasis: 0.9753  
+Cardiomegaly: 0.9963  
+Effusion: 0.9789  
+Infiltration: 0.9348  
+Mass: 0.9913  
+Nodule: 0.9864  
+Pneumonia: 0.9962  
+Pneumothorax: 0.9953  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9818102889854412
+epoch_auc [0.97525823 0.99625281 0.97892718 0.93481167 0.99128704 0.9864214
+ 0.99623173 0.99529226]
+phase train
+val Loss: 18.8634 AUC: 0.7524  
+
+Atelectasis: 0.7594  
+Cardiomegaly: 0.8331  
+Effusion: 0.8623  
+Infiltration: 0.6487  
+Mass: 0.7999  
+Nodule: 0.6811  
+Pneumonia: 0.6695  
+Pneumothorax: 0.7653  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7523937471611509
+epoch_auc [0.75937965 0.8330808  0.86226315 0.64866213 0.79987265 0.68111122
+ 0.6695141  0.76526628]
+phase val
+
+Epoch 37/44
+----------
+train Loss: 2.2554 AUC: 0.9838  
+
+Atelectasis: 0.9776  
+Cardiomegaly: 0.9967  
+Effusion: 0.9812  
+Infiltration: 0.9409  
+Mass: 0.9921  
+Nodule: 0.9876  
+Pneumonia: 0.9980  
+Pneumothorax: 0.9963  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9837917870172423
+epoch_auc [0.97759349 0.99666962 0.98117024 0.94094091 0.99211438 0.98755253
+ 0.99798265 0.99631048]
+phase train
+val Loss: 20.4716 AUC: 0.7524  
+
+Atelectasis: 0.7505  
+Cardiomegaly: 0.8495  
+Effusion: 0.8651  
+Infiltration: 0.6606  
+Mass: 0.7861  
+Nodule: 0.6928  
+Pneumonia: 0.6738  
+Pneumothorax: 0.7405  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7523541482710007
+epoch_auc [0.7504682  0.84954633 0.86506272 0.66055121 0.78613443 0.69278057
+ 0.67378115 0.74050859]
+phase val
+
+Epoch 38/44
+----------
+train Loss: 2.1704 AUC: 0.9850  
+
+Atelectasis: 0.9799  
+Cardiomegaly: 0.9972  
+Effusion: 0.9819  
+Infiltration: 0.9461  
+Mass: 0.9928  
+Nodule: 0.9880  
+Pneumonia: 0.9980  
+Pneumothorax: 0.9964  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9850344208408001
+epoch_auc [0.97991299 0.99723855 0.98192991 0.94606181 0.99278423 0.98795119
+ 0.99801187 0.99638482]
+phase train
+val Loss: 18.9356 AUC: 0.7492  
+
+Atelectasis: 0.7533  
+Cardiomegaly: 0.8438  
+Effusion: 0.8642  
+Infiltration: 0.6532  
+Mass: 0.7651  
+Nodule: 0.6789  
+Pneumonia: 0.6777  
+Pneumothorax: 0.7574  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7492074565089895
+epoch_auc [0.75325367 0.84383262 0.86423189 0.6532397  0.76512764 0.67886511
+ 0.67770375 0.75740528]
+phase val
+
+Epoch 39/44
+----------
+train Loss: 2.0843 AUC: 0.9860  
+
+Atelectasis: 0.9816  
+Cardiomegaly: 0.9973  
+Effusion: 0.9832  
+Infiltration: 0.9490  
+Mass: 0.9932  
+Nodule: 0.9894  
+Pneumonia: 0.9981  
+Pneumothorax: 0.9965  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9860358091937587
+epoch_auc [0.98155825 0.99728966 0.98319048 0.9490231  0.99324901 0.98941431
+ 0.99808346 0.9964782 ]
+phase train
+val Loss: 18.8037 AUC: 0.7469  
+
+Atelectasis: 0.7339  
+Cardiomegaly: 0.8528  
+Effusion: 0.8552  
+Infiltration: 0.6314  
+Mass: 0.7826  
+Nodule: 0.6999  
+Pneumonia: 0.6541  
+Pneumothorax: 0.7654  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.746920210748053
+epoch_auc [0.73393395 0.85284953 0.85521    0.63135394 0.78255788 0.69991351
+ 0.65414928 0.7653936 ]
+phase val
+
+Epoch 40/44
+----------
+train Loss: 1.9966 AUC: 0.9871  
+
+Atelectasis: 0.9814  
+Cardiomegaly: 0.9974  
+Effusion: 0.9844  
+Infiltration: 0.9542  
+Mass: 0.9944  
+Nodule: 0.9895  
+Pneumonia: 0.9984  
+Pneumothorax: 0.9968  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9870616490422257
+epoch_auc [0.98138321 0.99739318 0.98444679 0.95423292 0.99435866 0.98951526
+ 0.9983946  0.99676857]
+phase train
+val Loss: 20.0884 AUC: 0.7422  
+
+Atelectasis: 0.7554  
+Cardiomegaly: 0.8596  
+Effusion: 0.8657  
+Infiltration: 0.6511  
+Mass: 0.7655  
+Nodule: 0.6834  
+Pneumonia: 0.6087  
+Pneumothorax: 0.7484  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7422260516865913
+epoch_auc [0.75544975 0.85956251 0.86568301 0.65112401 0.7655135  0.68341796
+ 0.60870476 0.74835292]
+phase val
+
+Epoch 41/44
+----------
+train Loss: 1.9580 AUC: 0.9877  
+
+Atelectasis: 0.9836  
+Cardiomegaly: 0.9972  
+Effusion: 0.9850  
+Infiltration: 0.9562  
+Mass: 0.9939  
+Nodule: 0.9907  
+Pneumonia: 0.9982  
+Pneumothorax: 0.9967  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9876829691251334
+epoch_auc [0.98364927 0.99718257 0.98497381 0.95623698 0.99386333 0.99069951
+ 0.99818619 0.9966721 ]
+phase train
+val Loss: 21.8586 AUC: 0.7517  
+
+Atelectasis: 0.7497  
+Cardiomegaly: 0.8460  
+Effusion: 0.8710  
+Infiltration: 0.6439  
+Mass: 0.7833  
+Nodule: 0.6803  
+Pneumonia: 0.6602  
+Pneumothorax: 0.7792  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7517095338403934
+epoch_auc [0.74973404 0.84604301 0.87104732 0.64386467 0.78327548 0.68026203
+ 0.66022304 0.77922669]
+phase val
+
+Epoch 42/44
+----------
+train Loss: 1.8718 AUC: 0.9887  
+
+Atelectasis: 0.9848  
+Cardiomegaly: 0.9977  
+Effusion: 0.9856  
+Infiltration: 0.9594  
+Mass: 0.9948  
+Nodule: 0.9917  
+Pneumonia: 0.9982  
+Pneumothorax: 0.9972  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9886879513865747
+epoch_auc [0.98478746 0.99771963 0.98563366 0.95943027 0.99482721 0.9917196
+ 0.99816439 0.99722139]
+phase train
+val Loss: 23.3368 AUC: 0.7485  
+
+Atelectasis: 0.7417  
+Cardiomegaly: 0.8526  
+Effusion: 0.8644  
+Infiltration: 0.6520  
+Mass: 0.7678  
+Nodule: 0.7016  
+Pneumonia: 0.6474  
+Pneumothorax: 0.7605  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7484995646080845
+epoch_auc [0.7417305  0.85256588 0.86444087 0.65202386 0.76776776 0.70160765
+ 0.64738909 0.7604709 ]
+phase val
+
+Epoch 43/44
+----------
+train Loss: 1.9117 AUC: 0.9884  
+
+Atelectasis: 0.9837  
+Cardiomegaly: 0.9977  
+Effusion: 0.9857  
+Infiltration: 0.9594  
+Mass: 0.9945  
+Nodule: 0.9910  
+Pneumonia: 0.9982  
+Pneumothorax: 0.9972  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9884247296499649
+epoch_auc [0.98372447 0.99771272 0.98571406 0.95937398 0.99450954 0.99097383
+ 0.99822763 0.99716161]
+phase train
+val Loss: 20.4918 AUC: 0.7365  
+
+Atelectasis: 0.7375  
+Cardiomegaly: 0.8401  
+Effusion: 0.8562  
+Infiltration: 0.6424  
+Mass: 0.7922  
+Nodule: 0.6814  
+Pneumonia: 0.6005  
+Pneumothorax: 0.7414  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7364541188825611
+epoch_auc [0.73753281 0.84007524 0.85623881 0.64238693 0.79217026 0.68142031
+ 0.60045237 0.74135621]
+phase val
+
+Epoch 44/44
+----------
+train Loss: 1.7447 AUC: 0.9902  
+
+Atelectasis: 0.9874  
+Cardiomegaly: 0.9981  
+Effusion: 0.9874  
+Infiltration: 0.9662  
+Mass: 0.9948  
+Nodule: 0.9920  
+Pneumonia: 0.9982  
+Pneumothorax: 0.9974  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.9902091308201877
+epoch_auc [0.98742207 0.99814848 0.98744767 0.96624888 0.99480179 0.99204216
+ 0.99819128 0.99737072]
+phase train
+val Loss: 21.7026 AUC: 0.7419  
+
+Atelectasis: 0.7643  
+Cardiomegaly: 0.8376  
+Effusion: 0.8566  
+Infiltration: 0.6391  
+Mass: 0.7727  
+Nodule: 0.6797  
+Pneumonia: 0.6233  
+Pneumothorax: 0.7618  
+
+
+best_auc_ave 0.796518772906996
+epoch_auc_ave 0.7418683189054809
+epoch_auc [0.76426944 0.83762471 0.85655055 0.63908102 0.77269355 0.67967298
+ 0.62329909 0.76175521]
+phase val
+
+Training complete in 456m 10s
+Best val AUC: 0.796519
+
+Traceback (most recent call last):
+  File "/scratch/alinjose/alinjose/final_project/covid_19/cxr8/train.py", line 305, in <module>
+    training(model)
+  File "/scratch/alinjose/alinjose/final_project/covid_19/cxr8/train.py", line 294, in training
+    print('{}: {:.4f} '.format(c, best_auc[i]))
+IndexError: list index out of range
+cp: cannot stat '/localscratch/alinjose.52813278.0/outputs/*': No such file or directory

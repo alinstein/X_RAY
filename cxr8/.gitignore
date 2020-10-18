@@ -1,0 +1,10 @@
+dataset/images/*
+log/*
+savedModels/*
+nohup.out
+.ipynb_checkpoints/*
+__pycache__/*
+
+Training.ipynb
+runs/*
+
