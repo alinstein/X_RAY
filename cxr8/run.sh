@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --gres=gpu:1       # Request GPU "generic resources"
+#SBATCH --gres=gpu:2       # Request GPU "generic resources"
 #SBATCH --cpus-per-task=6  # Cores proportional to GPUs: 6 on Cedar, 16 on Graham.
 #SBATCH --mem=32000M       # Memory proportional to GPUs: 32000 Cedar, 64000 Graham.
 #SBATCH --time=0-10:00
@@ -35,7 +35,7 @@ mkdir savedModels
 cp /scratch/alinjose/alinjose/final_project/covid_19/cxr8/savedModels/* $SLURM_TMPDIR/savedModels
 
 
-python /scratch/alinjose/alinjose/final_project/covid_19/cxr8/train.py $SLURM_TMPDIR/outputs
+python /scratch/alinjose/alinjose/final_project/covid_19/cxr8/train.py 
 
 cp $SLURM_TMPDIR/savedModels/* /scratch/alinjose/alinjose/final_project/covid_19/cxr8/savedModels/
 cp $SLURM_TMPDIR/outputs/* /scratch/alinjose/alinjose/final_project/covid_19/cxr8/outputs/

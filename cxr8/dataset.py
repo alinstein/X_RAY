@@ -35,7 +35,7 @@ class CXRDataset(Dataset):
         self.transform = transform
         self.index_dir = os.path.join(root_dir, dataset_type+'_label.csv')
 #        self.classes = pd.read_csv(self.index_dir, header=None,nrows=1).iloc[0, :].values[1:9]  8 classes
-        self.classes = pd.read_csv(self.index_dir, header=None,nrows=1).iloc[0, :].values
+        self.classes = pd.read_csv(self.index_dir, header=None,nrows=1).iloc[0,  1:15].values
         self.label_index = pd.read_csv(self.index_dir, header=0)
         self.bbox_index = pd.read_csv(os.path.join(root_dir, 'BBox_List_2017.csv'), header=0)
 
@@ -45,13 +45,14 @@ class CXRDataset(Dataset):
        return int(len(self.label_index))
 
 
+
     def __getitem__(self, idx):
         name = self.label_index.iloc[idx, 0]
         img_dir = os.path.join(self.image_dir, name)
         image = Image.open(img_dir).convert('L')
         if self.transform:
             image = self.transform(image)
-        label = self.label_index.iloc[idx, :].values.astype('int')
+        label = self.label_index.iloc[idx, 1:15].values.astype('int')
         
         # bbox
         bbox = np.zeros([8, 512, 512])
