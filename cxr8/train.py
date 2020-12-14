@@ -6,7 +6,7 @@ import torch.optim as optim
 import argparse
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score , accuracy_score
 import numpy as np
 from tensorboardX import SummaryWriter
 import time
@@ -15,8 +15,8 @@ import os
 from torch.optim import SGD, Adadelta, Adagrad, Adam, RMSprop
 from torch.nn import DataParallel
 
-batch_size = 32
-num_epochs = 11
+batch_size = 16
+num_epochs = 45
 learning_rate = 1e-6
 output_size = 14
 resume_Training = True
@@ -185,7 +185,7 @@ def weighted_BCELoss(output, target, weights=None):
 #    print("Loss with custom method : {:4f} and BCE : {:4f} ".format(avg_loss,avg_loss_B))
 
     label = output.view(-1).ge(0.5).float()
-    acc = (target.view(-1) == label).float().sum() / len(label)
+    acc = accuracy_score(target.view(-1).detach().to('cpu').numpy() , label.detach().to('cpu').numpy())
         
     return torch.sum(loss), acc, avg_loss_B
 
@@ -257,12 +257,12 @@ def training(model):
  
             running_loss = 0.0
             running_loss_b =0.0
-            running_acc = 0.0
+            running_acc = []
             output_list = []
             label_list = []
             
             # Iterate over data.
-            for idx, data in enumerate(tqdm(dataloaders[phase])):
+            for idx, data in enumerate((dataloaders[phase])):
                 # get the inputs
                 
 #                if idx == 10 :
@@ -328,7 +328,7 @@ def training(model):
                 # metrix
                 running_loss += loss.item()
                 running_loss_b += loss_b.item()
-                running_acc += acc.detach().to('cpu').numpy()
+                running_acc.append(acc)
                 outputs = outputs.detach().to('cpu').numpy()
                 labels =  labels.detach().to('cpu').numpy()
                 
@@ -339,20 +339,24 @@ def training(model):
                 if idx%10 == 0:
                     if phase == 'train':
                         writer[phase].add_scalar('loss', loss.item()/outputs.shape[0], iter_num)
-#                    print('\r{} {:.2f}%'.format(phase, 100*idx/len(dataloaders[phase])), end='\r')
+                    print('\r{} {:.2f}%'.format(phase, 100*idx/len(dataloaders[phase])), end='\r')
                 if idx%100 == 0 and idx!=0:
                     if phase == 'train':
                         try:
                             auc = roc_auc_score(np.array(label_list[-100*batch_size:]), np.array(output_list[-100*batch_size:]))
                             writer[phase].add_scalar('auc', auc, iter_num)
+                            writer[phase].add_scalar('accuracy', auc, iter_num)
                         except:
                             pass
             epoch_loss_b = running_loss_b / dataset_sizes[phase]
             epoch_loss = running_loss / dataset_sizes[phase]
-            epoch_acc  = running_acc / dataset_sizes[phase]
+            epoch_acc  = np.array(running_acc).mean()
+            print("First calculation ACC :",epoch_acc)
             
             try:
                 epoch_auc_ave = roc_auc_score(np.array(label_list), np.array(output_list))
+                output_numpy = (np.array(output_list)>=0)*1
+                print("Second calculation ACC :",roc_auc_score(np.array(label_list), np.array(output_numpy)))
                 epoch_auc = roc_auc_score(np.array(label_list), np.array(output_list), average=None)
             except:
                 epoch_auc_ave = 0
