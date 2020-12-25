@@ -1,12 +1,11 @@
-from dataset import CXRDataset, CXRDataset_BBox_only
-from model import Model, DenseNet121 , DenseNet121_AVG , ResNet18_AVG
+from dataset import CXRDataset
+from model import DenseNet121, DenseNet121_AVG, ResNet18_AVG
 import torch
 import torch.nn.functional as F
-import torch.optim as optim
 import argparse
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from sklearn.metrics import roc_auc_score , accuracy_score
+from sklearn.metrics import roc_auc_score
 import numpy as np
 from tensorboardX import SummaryWriter
 import time
@@ -15,45 +14,31 @@ import os
 from torch.optim import SGD, Adadelta, Adagrad, Adam, RMSprop
 from torch.nn import DataParallel
 
-batch_size = 16
-num_epochs = 45
-learning_rate = 1e-6
-output_size = 14
-resume_Training = True
-regulization = 0
-model_save_dir = './savedModels'
-model_num=0
+model_num = 0
 model_name = 'net_v1_lr_1e-6_bbox_data_arg'
-log_dir = './runs'
-data_root_dir = './dataset'
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 num_GPU = torch.cuda.device_count()
 parser = argparse.ArgumentParser(description='Train model')
-
-parser.add_argument('--num_workers', default=8, type=int, help="Number of "
-                    "workers for each data loader")
-parser.add_argument('--device_ids', default='0', type=str,
-                    help="GPU indices ""comma separated, e.g. '0,1' ")
-parser.add_argument('--pre_train', default=None, type=str, help="If get"
-                    "parameters from pretrained model")
-parser.add_argument('--resume', default=0, type=int, help="If resume from "
-                    "previous run")
-
+parser.add_argument('--num_classes', default=8, type=int, help="Number of disease labels")
+parser.add_argument('--num_workers', default=6, type=int, help="Number of workers for each data loader")
+parser.add_argument('--batch_size', default=24, type=int, help="Batch size while training")
+parser.add_argument('--device_ids', default='0', type=str, help="GPU indices ""comma separated, e.g. '0,1' ")
+parser.add_argument('--pre_train', default=None, type=str, help="If get parameters from pretrained model")
+parser.add_argument('--resume', default=False, type=int, help="If resume from pevious run")
+parser.add_argument('--model_save_dir', default='./savedModels', type=str, help="Location of saved models")
+parser.add_argument('--log_dir', default='./runs', type=str, help="Location to save logs")
 parser.add_argument('--global_pool', default='LSE', type=str, help="Global Pooling method [LSE,AVG]")
 parser.add_argument('--backbone', default='densenet121', type=str, help="Backbone Network")
-parser.add_argument('--attention', default="CAM", type=str, help="attention")
+parser.add_argument('--img_size', default=224, type=int, help="Resolution of input image")
+parser.add_argument('--attention', default=None, type=str, help="attention")#"CAM"
 parser.add_argument('--attention_map', default=None, type=str, help="attention")
 parser.add_argument('--lse_gamma', default=0.5, type=float, help="lse_gamma")
-parser.add_argument('--num_classes', default=output_size, type=int, help="num_classes")
 parser.add_argument('--norm_type', default='BatchNorm', type=str, help="BatchNorm")
-
-                    
-parser.add_argument('--logtofile', default=False, type=bool, help="Save log "
-                    "in save_path/log.txt if set True")
+parser.add_argument('--logtofile', default=False, type=bool, help="Save log in save_path/log.txt if set True")
 parser.add_argument('--verbose', default=False, type=bool, help="Detail info")
-
 parser.add_argument('--optimizer', default='Adam', type=str, help="Optimizer")
+parser.add_argument('--epochs', default=30, type=int, help="Number of epoches")
 parser.add_argument('--lr', default=1e-6, type=float, help="Learning Rate")
 parser.add_argument('--lr_factor', default=0.1, type=float, help="Learning rate factor")
 parser.add_argument('--lr_epochs', default=[0.9], type=list, help="Learning rate epoches")
@@ -62,93 +47,66 @@ parser.add_argument('--weight_decay', default=0.9, type=float, help="weight deca
 
 args = parser.parse_args()
 
+current_location = os.getcwd()
+data_root_dir = os.path.join(current_location, 'dataset')
 
-    
-mean = [0.50576189]
-def make_dataLoader():
-    trans = {}
-    if model_num == 1 :
-            trans['train'] = transforms.Compose([
-                transforms.Resize(512),
-                transforms.ToTensor(),
-                transforms.Normalize(mean, [1.])
-            ])
-            trans['val'] = transforms.Compose([
-                transforms.Resize(512),
-                transforms.ToTensor(),
-                transforms.Normalize(mean, [1.])
-            ])
-    else :
-            trans['train'] = transforms.Compose([
-           
-                                        transforms.Resize(512),
-                                        transforms.RandomHorizontalFlip(),
-                                        transforms.ToTensor(),
-                                        transforms.Normalize([0.485, 0.456, 0.406],[0.229, 0.224, 0.225])
-            ])
-            trans['val'] = transforms.Compose([
-                                
-                                        transforms.Resize(512),
-                                        transforms.RandomHorizontalFlip(),
-                                        transforms.ToTensor(),
-                                        transforms.Normalize([0.485, 0.456, 0.406],[0.229, 0.224, 0.225])
-            ])
-    
-    
-    
-    datasets = {
-        'train': CXRDataset(data_root_dir, transform=trans['train']),
-        'val': CXRDataset(data_root_dir, dataset_type='val', transform=trans['val'])
-    }
-    dataloaders = {x: DataLoader(datasets[x], batch_size=batch_size, shuffle=True, num_workers=6)
-                    for x in ['train', 'val']}
+
+def make_dataLoader(args):
+    trans = {'train': transforms.Compose([
+        transforms.Resize(args.img_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]), 'val': transforms.Compose([
+        transforms.Resize(args.img_size),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])}
+    datasets = {'train': CXRDataset(data_root_dir, transform=trans['train']),
+                'val': CXRDataset(data_root_dir, dataset_type='val', transform=trans['val'])}
+    dataloaders = {x: DataLoader(datasets[x], batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
+                   for x in ['train', 'val']}
     dataset_sizes = {x: len(datasets[x]) for x in ['train', 'val']}
     class_names = datasets['train'].classes
-
-    print(dataset_sizes)
-    
+    print("Length of dataset ", dataset_sizes)
     return dataloaders, dataset_sizes, class_names
 
 
-def LoadModel(checkpoint_file,model,optimizer,epoch_inti,best_auc_ave):
-
+def LoadModel(checkpoint_file, model, optimizer, epoch_inti, best_auc_ave):
     checkpoint = torch.load(checkpoint_file)
     optimizer.load_state_dict(checkpoint['optimizer'])
     epoch_inti = checkpoint['epoch']
     best_auc_ave = checkpoint['best_va_acc']
-    
     print(model)
     if num_GPU > 1:
-       model.module.load_state_dict(checkpoint['model_state_dict'])
-    else :
-       model.load_state_dict(checkpoint['model_state_dict'])
-    
-    return model,optimizer,epoch_inti,best_auc_ave
-    
-    
-def SaveModel(epoch,model,optimizer,best_auc_ave,file_name):
+        model.module.load_state_dict(checkpoint['model_state_dict'])
+    else:
+        model.load_state_dict(checkpoint['model_state_dict'])
+    return model, optimizer, epoch_inti, best_auc_ave
+
+
+def SaveModel(epoch, model, optimizer, best_auc_ave, file_name):
     if num_GPU > 1:
-      state = {
-              'epoch': epoch,
-              'model_state_dict': model.module.state_dict(),
-              'optimizer': optimizer.state_dict(),
-              'best_va_acc': best_auc_ave,
-              }
-    else :
-      state = {
+        state = {
+            'epoch': epoch,
+            'model_state_dict': model.module.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'best_va_acc': best_auc_ave
+        }
+    else:
+        state = {
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
             'optimizer': optimizer.state_dict(),
-            'best_va_acc': best_auc_ave,
-             }
-    
+            'best_va_acc': best_auc_ave
+        }
     torch.save(state, file_name)
+    pass
 
 
 def get_optimizer(params, cfg):
     if cfg.optimizer == 'SGD':
-        return SGD(params, lr=cfg.lr, momentum=cfg.momentum,
-                   weight_decay=cfg.weight_decay)
+        return SGD(params, lr=cfg.lr, momentum=cfg.momentum, weight_decay=cfg.weight_decay)
     elif cfg.optimizer == 'Adadelta':
         return Adadelta(params, lr=cfg.lr, weight_decay=cfg.weight_decay)
     elif cfg.optimizer == 'Adagrad':
@@ -156,168 +114,141 @@ def get_optimizer(params, cfg):
     elif cfg.optimizer == 'Adam':
         return Adam(params, lr=cfg.lr, weight_decay=cfg.weight_decay)
     elif cfg.optimizer == 'RMSprop':
-        return RMSprop(params, lr=cfg.lr, momentum=cfg.momentum,
-                       weight_decay=cfg.weight_decay)
+        return RMSprop(params, lr=cfg.lr, momentum=cfg.momentum, weight_decay=cfg.weight_decay)
     else:
         raise Exception('Unknown optimizer : {}'.format(cfg.optimizer))
-        
-        
+
+
 def weighted_BCELoss(output, target, weights=None):
-    output = output.clamp(min=1e-5, max=1-1e-5)
+    output = output.clamp(min=1e-5, max=1 - 1e-5)
     target = target.float()
     if weights is not None:
         assert len(weights) == 2
-
         loss = -weights[0] * (target * torch.log(output)) - weights[1] * ((1 - target) * torch.log(1 - output))
     else:
         loss = -target * torch.log(output) - (1 - target) * torch.log(1 - output)
-
 
     if target.sum() == 0:
         loss_B = torch.tensor(0., requires_grad=True).to(device)
     else:
         weight = (target.size()[0] - target.sum()) / target.sum()
-       
-        loss_B = F.binary_cross_entropy_with_logits(
-                            output, target, pos_weight=weight)
-#    print("_____for loss verificaiton_________")  
-    avg_loss, avg_loss_B = np.mean(loss.detach().to('cpu').numpy()) , np.mean(loss_B.detach().to('cpu').numpy())
-#    print("Loss with custom method : {:4f} and BCE : {:4f} ".format(avg_loss,avg_loss_B))
+        loss_B = F.binary_cross_entropy_with_logits(output, target, pos_weight=weight)
 
-    label = output.view(-1).ge(0.5).float()
-    acc = accuracy_score(target.view(-1).detach().to('cpu').numpy() , label.detach().to('cpu').numpy())
-        
-    return torch.sum(loss), acc, avg_loss_B
+    avg_loss_B = np.mean(loss_B.detach().to('cpu').numpy())
+    return torch.sum(loss), avg_loss_B
 
-def training(model):
-    writer = {x: SummaryWriter(log_dir=os.path.join(log_dir, model_name, x),
-                comment=model_name)
-          for x in ['train', 'val']}
-    #optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=0)
+
+def model_name(args):
+    if args.attention_map is None:
+        return str(args.backbone + '_' + args.global_pool + '_IMG_SIZE_' + str(args.img_size) +
+                   "num_class_" + str(args.num_classes))
+    else:
+        return str(
+            args.backbone + '_' + args.global_pool + '_' + args.attention_map + '_IMG_SIZE_' + str(args.img_size) +
+            "num_class_" + str(args.num_classes))
+
+
+def select_model(args):
+    if args.backbone == "densenet121":
+        return DenseNet121(args)
+    if args.backbone == "densenet121_AVG":
+        return DenseNet121_AVG(args)
+    if args.backbone == "ResNet18":
+        return ResNet18_AVG(args)
+
+
+def training(model, args):
+
+    writer = {x: SummaryWriter(log_dir=os.path.join(args.log_dir, model_name(args), x), comment=model_name)
+              for x in ['train', 'val']}
     optimizer = get_optimizer(model.parameters(), args)
-    #scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[20,30], gamma=0.1)
-    dataloaders, dataset_sizes, class_names = make_dataLoader()
-    
-    
-    
-    
-    
-    if not os.path.exists(model_save_dir):
-                       os.makedirs(model_save_dir)
-    best_auc_ave = 0.0   # to check if best validation accuracy  
-    epoch_inti = 1   # epoch starts from here  
-    
+    dataloaders, dataset_sizes, class_names = make_dataLoader(args)
+
+    if not os.path.exists(args.model_save_dir):
+        os.makedirs(args.model_save_dir)
+    best_auc_ave = 0.0  # to check if best validation accuracy
+    epoch_inti = 1  # epoch starts from here
+
     best_model_wts = model.state_dict()
     best_auc = []
     iter_num = 0
 
     # Prepare checkpoint file and model file to save and load from  
-    if args.attention_map == None :
-      checkpoint_file = os.path.join(model_save_dir,str(args.backbone+ '_' + args.global_pool+ '_' +"checkpoint.pth"))
-      bestmodel_file = os.path.join(model_save_dir,str(args.backbone+ '_' + args.global_pool+ '_' +"best_model.pth") )     
-    else :
-      checkpoint_file = os.path.join(model_save_dir, str(args.backbone + '_' + args.global_pool + '_'+ args.attention_map + '_'+ "checkpoint.pth"))
-      bestmodel_file = os.path.join(model_save_dir, str(args.backbone + '_' + args.global_pool + '_' + args.attention_map + '_'+ "best_model.pth"))   
+    checkpoint_file = os.path.join(args.model_save_dir, str(model_name(args) + '_' + "checkpoint.pth"))
+    bestmodel_file = os.path.join(args.model_save_dir, str(model_name(args) + '_' + "best_model.pth"))
     
     ''' Check for existing training results. If it existst, and the configuration
     is set to resume `config.resume_TIRG==True`, resume from previous training. 
     If not, delete existing checkpoint.'''
     if os.path.exists(checkpoint_file):
-            
-            if resume_Training:
-                model,optimizer,epoch_inti,best_auc_ave = LoadModel(checkpoint_file,model,optimizer,epoch_inti,best_auc_ave)
-                print("Checkpoint found! Resuming")
+        if args.resume:
+            model, optimizer, epoch_inti, best_auc_ave = LoadModel(checkpoint_file, model, optimizer, epoch_inti,
+                                                                   best_auc_ave)
+            print("Checkpoint found! Resuming")
+        else:
+            pass
 
-            else:
-                pass   
+    # print("best_auc_ave", best_auc_ave)
 
-    print("best_auc_ave",best_auc_ave)
-
-    
     since = time.time()
 
-    for epoch in range(epoch_inti,num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+    for epoch in range(epoch_inti, args.epochs):
+        print('Epoch {}/{}'.format(epoch, args.epochs - 1))
         print('-' * 10)
-        #scheduler.step()
+        # scheduler.step()
         # Each epoch has a training and validation phase
-        
-        for phase in [ 'train','val']:
-            
+
+        for phase in ['train', 'val']:
+
             # Only Validation in every 5 cycles
             if (phase == 'val') and (epoch % 1 != 0):
                 continue
-                
-                
             if phase == 'train':
                 model.train(True)  # Set model to training mode
             else:
                 model.train(False)  # Set model to evaluate mode
- 
- 
+
             running_loss = 0.0
-            running_loss_b =0.0
-            running_acc = []
+            running_loss_b = 0.0
             output_list = []
             label_list = []
-            
-            # Iterate over data.
-            for idx, data in enumerate((dataloaders[phase])):
-                # get the inputs
-                
-#                if idx == 10 :
-#                  break
-                images, labels, names, bboxes, bbox_valids = data
 
+            # Iterate over data.
+            for idx, data in enumerate(tqdm(dataloaders[phase])):
+
+                #                if idx == 10 :
+                #                  break
+                images, labels, names = data
                 images = images.to(device)
                 labels = labels.to(device)
-                
+
                 if phase == 'train':
                     torch.set_grad_enabled(True)
                 else:
                     torch.set_grad_enabled(False)
-                    
-                #calculate weight for loss
+
+                # calculate weight for loss
                 P = 0
                 N = 0
                 for label in labels:
                     for v in label:
-                        if int(v) == 1: P += 1
-                        else: N += 1
-                if P!=0 and N!=0:
-                    BP = (P + N)/P
-                    BN = (P + N)/N
+                        if int(v) == 1:
+                            P += 1
+                        else:
+                            N += 1
+                if P != 0 and N != 0:
+                    BP = (P + N) / P
+                    BN = (P + N) / N
                     weights = torch.tensor([BP, BN], dtype=torch.float).to(device)
-                else: weights = None
+                else:
+                    weights = None
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
                 outputs = model(images)
-#                # forward
-#                outputs, segs = model(images)
-                
-#                # remove invalid bbox and segmentation outputs
-#                bbox_list = []
-#                for i in range(bbox_valids.size(0)):
-#                    bbox_list.append([])
-#                    for j in range(8):
-#                        if bbox_valids[i][j] == 1:
-#                            bbox_list[i].append(bboxes[i][j])
-#                    bbox_list[i] = torch.stack(bbox_list[i]).to(device)
-#                
-#                seg_list = []
-#                for i in range(bbox_valids.size(0)):
-#                    seg_list.append([])
-#                    for j in range(8):
-#                        if bbox_valids[i][j] == 1:
-#                            seg_list[i].append(segs[i][j])
-#                    seg_list[i] = torch.stack(seg_list[i]).to(device)
-                
+
                 # classification loss
-                loss , acc ,loss_b = weighted_BCELoss(outputs, labels, weights=weights)
-                # segmentation loss
-#                for i in range(len(seg_list)):
-#                    loss += 5*weighted_BCELoss(seg_list[i], bbox_list[i], weights=torch.tensor([10., 1.]).to(device))/(512*512)
+                loss, loss_b = weighted_BCELoss(outputs, labels, weights=weights)
 
                 # backward + optimize only if in training phase
                 if phase == 'train':
@@ -325,38 +256,32 @@ def training(model):
                     optimizer.step()
                     iter_num += 1
 
-                # metrix
                 running_loss += loss.item()
                 running_loss_b += loss_b.item()
-                running_acc.append(acc)
                 outputs = outputs.detach().to('cpu').numpy()
-                labels =  labels.detach().to('cpu').numpy()
-                
+                labels = labels.detach().to('cpu').numpy()
+
                 for i in range(outputs.shape[0]):
                     output_list.append(outputs[i].tolist())
                     label_list.append(labels[i].tolist())
-                    
-                if idx%10 == 0:
+
+                if idx % 10 == 0:
                     if phase == 'train':
-                        writer[phase].add_scalar('loss', loss.item()/outputs.shape[0], iter_num)
-                    print('\r{} {:.2f}%'.format(phase, 100*idx/len(dataloaders[phase])), end='\r')
-                if idx%100 == 0 and idx!=0:
+                        writer[phase].add_scalar('loss', loss.item() / outputs.shape[0], iter_num)
+                    print('\r{} {:.2f}%'.format(phase, 100 * idx / len(dataloaders[phase])), end='\r')
+                if idx % 100 == 0 and idx != 0:
                     if phase == 'train':
                         try:
-                            auc = roc_auc_score(np.array(label_list[-100*batch_size:]), np.array(output_list[-100*batch_size:]))
+                            auc = roc_auc_score(np.array(label_list[-100 * args.batch_size:]),
+                                                np.array(output_list[-100 * args.batch_size:]))
                             writer[phase].add_scalar('auc', auc, iter_num)
-                            writer[phase].add_scalar('accuracy', auc, iter_num)
                         except:
                             pass
             epoch_loss_b = running_loss_b / dataset_sizes[phase]
             epoch_loss = running_loss / dataset_sizes[phase]
-            epoch_acc  = np.array(running_acc).mean()
-            print("First calculation ACC :",epoch_acc)
-            
+
             try:
                 epoch_auc_ave = roc_auc_score(np.array(label_list), np.array(output_list))
-                output_numpy = (np.array(output_list)>=0)*1
-                print("Second calculation ACC :",roc_auc_score(np.array(label_list), np.array(output_numpy)))
                 epoch_auc = roc_auc_score(np.array(label_list), np.array(output_list), average=None)
             except:
                 epoch_auc_ave = 0
@@ -365,35 +290,40 @@ def training(model):
             if phase == 'val':
                 writer[phase].add_scalar('loss', epoch_loss, iter_num)
                 writer[phase].add_scalar('auc', epoch_auc_ave, iter_num)
-                writer[phase].add_scalar('acc', epoch_acc, iter_num)
-                
+
             for i, c in enumerate(class_names):
                 writer[phase].add_pr_curve(c, np.array(label_list[:][i]), np.array(output_list[:][i]), iter_num)
-            
+
             log_str = ''
-            log_str += '{} Loss: {:.4f} AUC: {:.4f} Acc: {:4f} Loss_b: {:.4f} \n\n'.format(
-                                                        phase, epoch_loss, epoch_auc_ave,epoch_acc,epoch_loss_b)
+            log_str += 'Loss: {:.4f} AUC: {:.4f} Loss_b: {:.4f} \n\n'.format(
+                epoch_loss, epoch_auc_ave, epoch_loss_b)
+
             for i, c in enumerate(class_names):
                 log_str += '{}: {:.4f}  \n'.format(c, epoch_auc[i])
+
             log_str += '\n'
+            if phase == 'val':
+                print("\n\nValidation Phase ")
+            else:
+                print("\n\nTraining Phase ")
+
             print(log_str)
-            writer[phase].add_text('log',log_str , iter_num)
-            print("best_auc_ave",best_auc_ave)
-            print("epoch_auc_ave",epoch_auc_ave)
-            print("phase",phase)
-            print("Acc", epoch_acc)
+            writer[phase].add_text('log', log_str, iter_num)
+            print("Best average AUC :", best_auc_ave)
+            print("Average AUC of current epoch", epoch_auc_ave)
+
             # save model for validation
             if phase == 'val' and epoch_auc_ave > best_auc_ave:
                 best_auc = epoch_auc
-                print("Rewriting",best_auc_ave, "by", epoch_auc_ave)
+                print("Rewriting model with accuracy", round(best_auc_ave, 4), " by ", round(epoch_auc_ave, 4))
                 best_auc_ave = epoch_auc_ave
-                print('Model saved to %s'%(bestmodel_file))
+                print('Model saved to %s' % bestmodel_file)
                 print("Saving the best checkpoint")
-                SaveModel(epoch,model,optimizer,best_auc_ave,bestmodel_file)
-                writer[phase].add_text('log','Model saved to %s\n\n'%(model_save_dir) , iter_num)
-                
-            if phase == 'train' and epoch % 1 == 0:  
-                SaveModel(epoch,model,optimizer,best_auc_ave,checkpoint_file)
+                SaveModel(epoch, model, optimizer, best_auc_ave, bestmodel_file)
+                writer[phase].add_text('log', 'Model saved to %s\n\n' % (args.model_save_dir), iter_num)
+
+            if phase == 'train' and epoch % 1 == 0:
+                SaveModel(epoch, model, optimizer, best_auc_ave, checkpoint_file)
 
         print()
 
@@ -407,32 +337,19 @@ def training(model):
 
     # load best model weights
     model.load_state_dict(best_model_wts)
-    
+
     return model
 
+
 if __name__ == '__main__':
-    
+
     print("\n\n Configrations \n Backbone : {} \n Attention used :{} \n Number of classes : {}"
-            "\n Global Pooling method :{} \n\n".format(args.backbone,args.attention_map,args.num_classes,args.global_pool))
-
-
-
-    model = DenseNet121_AVG(output_size,args).to(device)
-#    model = ResNet18_AVG(output_size).to(device)
-
-#    if args.verbose is True:
-#        from torchsummary import summary
-#        if cfg.fix_ratio:
-#            h, w = cfg.long_side, cfg.long_side
-#        else:
-#            h, w = cfg.height, cfg.width
-#        summary(model.to(device), (3, h, w))
-
+          "\n Global Pooling method :{} \n\n".format(args.backbone, args.attention_map, args.num_classes,
+                                                     args.global_pool))
+    model = select_model(args)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     if torch.cuda.device_count() > 1:
-      print("Let's use", torch.cuda.device_count(), "GPUs!")
-      # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
-      model = DataParallel(model)
-      
+        print("Let's use", torch.cuda.device_count(), "GPUs!")
+        model = DataParallel(model)
     model.to(device)
-    training(model)
+    training(model, args)
