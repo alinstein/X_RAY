@@ -1,0 +1,73 @@
+./temp_output/00000003_000.png 13
+Atelectasis 411.8 512.5 219.0 139.1
+Atelectasis 652.0 696.0 216.0 136.0
+Infiltration 394.5 389.1 294.0 297.4
+Infiltration 744.0 748.0 216.0 212.0
+Mass 434.3 366.7 168.7 189.8
+Mass 296.0 540.0 168.0 188.0
+Nodule 502.4 458.7 71.9 70.4
+Nodule 348.0 476.0 68.0 68.0
+Pneumonia 378.7 416.7 276.5 304.5
+Pneumonia 500.0 100.0 276.0 304.0
+Pneumonia 244.0 484.0 276.0 304.0
+Pneumothorax 369.3 209.4 198.9 246.0
+Pneumothorax 280.0 388.0 196.0 244.0
+./temp_output/00000003_001.png 11
+Atelectasis 411.8 512.5 219.0 139.1
+Atelectasis 656.0 316.0 216.0 136.0
+Cardiomegaly 348.5 392.3 479.8 381.1
+Cardiomegaly 144.0 320.0 476.0 380.0
+Cardiomegaly 808.0 320.0 152.0 380.0
+Mass 434.3 366.7 168.7 189.8
+Nodule 502.4 458.7 71.9 70.4
+Pneumonia 378.7 416.7 276.5 304.5
+Pneumonia 240.0 232.0 276.0 304.0
+Pneumothorax 369.3 209.4 198.9 246.0
+Pneumothorax 64.0 64.0 196.0 244.0
+./temp_output/00000003_002.png 15
+Atelectasis 411.8 512.5 219.0 139.1
+Atelectasis 660.0 444.0 216.0 136.0
+Cardiomegaly 348.5 392.3 479.8 381.1
+Cardiomegaly 808.0 320.0 152.0 380.0
+Effusion 396.5 415.8 221.6 318.0
+Effusion 936.0 604.0 24.0 316.0
+Infiltration 394.5 389.1 294.0 297.4
+Infiltration 64.0 100.0 292.0 296.0
+Mass 434.3 366.7 168.7 189.8
+Nodule 502.4 458.7 71.9 70.4
+Nodule 216.0 216.0 68.0 68.0
+Pneumonia 378.7 416.7 276.5 304.5
+Pneumonia 904.0 64.0 56.0 304.0
+Pneumothorax 369.3 209.4 198.9 246.0
+Pneumothorax 944.0 64.0 16.0 244.0
+./temp_output/00000003_003.png 12
+Atelectasis 411.8 512.5 219.0 139.1
+Atelectasis 788.0 572.0 172.0 136.0
+Infiltration 394.5 389.1 294.0 297.4
+Infiltration 900.0 108.0 60.0 296.0
+Mass 434.3 366.7 168.7 189.8
+Mass 424.0 540.0 168.0 188.0
+Nodule 502.4 458.7 71.9 70.4
+Nodule 1012.0 728.0 -52.0 68.0
+Pneumonia 378.7 416.7 276.5 304.5
+Pneumonia 368.0 360.0 276.0 304.0
+Pneumothorax 369.3 209.4 198.9 246.0
+Pneumothorax 412.0 388.0 196.0 244.0
+./temp_output/00000003_004.png 12
+Atelectasis 411.8 512.5 219.0 139.1
+Atelectasis 532.0 568.0 216.0 136.0
+Cardiomegaly 348.5 392.3 479.8 381.1
+Cardiomegaly 656.0 320.0 304.0 380.0
+Infiltration 394.5 389.1 294.0 297.4
+Infiltration 620.0 64.0 292.0 296.0
+Mass 434.3 366.7 168.7 189.8
+Nodule 502.4 458.7 71.9 70.4
+Nodule 68.0 1008.0 68.0 -48.0
+Pneumonia 378.7 416.7 276.5 304.5
+Pneumothorax 369.3 209.4 198.9 246.0
+Pneumothorax 152.0 64.0 196.0 244.0
+./temp_output/00000003_005.png 0
+./temp_output/00000003_006.png 0
+./temp_output/00000003_007.png 0
+./temp_output/00000013_000.png 0
+./temp_output/00000013_001.png 0
