@@ -177,7 +177,7 @@ class AttentionMap(nn.Module):
         self.cfg = cfg
         self.channel_attention = CAModule(num_channels)
         self.spatial_attention = SAModule(num_channels)
-        self.pyramid_attention = FPAModule(num_channels, cfg.norm_type)
+        self.pyramid_attention = FPAModule(num_channels, 'BatchNorm')
 
     def cuda(self, device=None):
         return self._apply(lambda t: t.cuda(device))
