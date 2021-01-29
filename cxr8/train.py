@@ -8,7 +8,9 @@ import numpy as np
 from tensorboardX import SummaryWriter
 import time
 from tqdm import tqdm
+import torch.nn.functional as F
 import os
+from model import PCAM_Model
 from eval import eval_function
 from config import parser
 from dataset import CXRDataset, CXRDatasetBinary
@@ -129,7 +131,11 @@ def weighted_BCELoss(output, target, weights=None):
 def training(model, args):
     writer = SummaryWriter(log_dir=os.path.join(args.log_dir, model_name(args)))
     writer.add_text('log', str(args), 0)
-    optimizer = get_optimizer(model.parameters(), args)
+    if args.backbone == 'resnet50_wildcat':
+        params = model.get_config_optim(args.lr, 0.5)
+    else :
+        params = model.parameters()
+    optimizer = get_optimizer(params, args)
     dataloaders, dataset_sizes, class_names = make_dataLoader(args)
 
     if not os.path.exists(args.model_save_dir):
@@ -191,21 +197,21 @@ def training(model, args):
                 else:
                     torch.set_grad_enabled(False)
 
-                # calculate weight for loss
-                P = 0
-                N = 0
-                for label in labels:
-                    for v in label:
-                        if int(v) == 1:
-                            P += 1
-                        else:
-                            N += 1
-                if P != 0 and N != 0:
-                    BP = (P + N) / P
-                    BN = (P + N) / N
-                    weights = torch.tensor([BP, BN], dtype=torch.float).to(device)
-                else:
-                    weights = None
+                # # calculate weight for loss
+                # P = 0
+                # N = 0
+                # for label in labels:
+                #     for v in label:
+                #         if int(v) == 1:
+                #             P += 1
+                #         else:
+                #             N += 1
+                # if P != 0 and N != 0:
+                #     BP = (P + N) / P
+                #     BN = (P + N) / N
+                #     weights = torch.tensor([BP, BN], dtype=torch.float).to(device)
+                # else:
+                weights = None
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -473,6 +479,194 @@ def training_abnormal(model, args):
     return model
 
 
+def get_loss(output, target, index, device, cfg):
+
+    target = target[:, index].view(-1)
+    # pos_weight = torch.from_numpy(
+    #     np.array(cfg.pos_weight,
+    #              dtype=np.float32)).to(device).type_as(target)
+    # if cfg.batch_weight:
+    if target.sum() == 0:
+        loss = torch.tensor(0., requires_grad=True).to(device)
+    else:
+        weight = (target.size()[0] - target.sum()) / target.sum()
+        loss = F.binary_cross_entropy_with_logits(
+            output[:,index].view(-1), target.float(), pos_weight=weight)
+    # else:
+    #     loss = torch.nn.F.binary_cross_entropy_with_logits(
+    #         output[index].view(-1), target, pos_weight=pos_weight[index])
+
+    label = torch.sigmoid(output[:,index].view(-1)).ge(0.5).float()
+    acc = (target == label).float().sum() / len(label)
+
+    return (loss, acc)
+
+def training_PCAM(model, args):
+    writer = SummaryWriter(log_dir=os.path.join(args.log_dir, model_name(args)))
+    writer.add_text('log', str(args), 0)
+    if args.backbone == 'resnet50_wildcat':
+        params = model.get_config_optim(args.lr, 0.5)
+    else :
+        params = model.parameters()
+    optimizer = get_optimizer(params, args)
+    dataloaders, dataset_sizes, class_names = make_dataLoader(args)
+
+    if not os.path.exists(args.model_save_dir):
+        os.makedirs(args.model_save_dir)
+    best_auc_ave = 0.0  # to check if best validation accuracy
+    epoch_inti = 1  # epoch starts from here
+
+    best_model_wts = model.state_dict()
+    best_auc = []
+    iter_num = 0
+
+    # Prepare checkpoint file and model file to save and load from
+    checkpoint_file = os.path.join(args.model_save_dir, str(model_name(args) + '_' + "checkpoint.pth"))
+    bestmodel_file = os.path.join(args.model_save_dir, str(model_name(args) + '_' + "best_model.pth"))
+
+    ''' Check for existing training results. If it existst, and the configuration
+    is set to resume `config.resume_TIRG==True`, resume from previous training. 
+    If not, delete existing checkpoint.'''
+    if os.path.exists(checkpoint_file):
+        if args.resume:
+            model, optimizer, epoch_inti, best_auc_ave = LoadModel(checkpoint_file, model, optimizer, epoch_inti,
+                                                                   best_auc_ave)
+            print("Checkpoint found! Resuming")
+        else:
+            pass
+
+    print(model)
+    since = time.time()
+
+    for epoch in range(epoch_inti, args.epochs + 1):
+        print('Epoch {}/{}'.format(epoch, args.epochs))
+        print('-' * 10)
+
+        for phase in ['train', 'val']:
+
+            # Only Validation in every 5 cycles
+            if (phase == 'val') and (epoch % 1 != 0):
+                continue
+            if phase == 'train':
+                model.train(True)  # Set model to training mode
+            else:
+                model.train(False)  # Set model to evaluate mode
+
+            running_loss = 0.0
+            output_list = []
+            label_list = []
+
+            # Iterate over data.
+            for idx, data in enumerate(tqdm(dataloaders[phase])):
+
+                # if idx >= 10:
+                #     break
+                images, labels, names = data
+                images = images.to(device)
+                labels = labels.to(device)
+
+                if phase == 'train':
+                    torch.set_grad_enabled(True)
+                else:
+                    torch.set_grad_enabled(False)
+
+                # zero the parameter gradients
+                optimizer.zero_grad()
+                outputs, _ = model(images)
+
+                # classification loss
+                loss = 0
+                for t in range(args.num_classes):
+                    loss_t, acc_t = get_loss(outputs, labels, t, device, args)
+                    loss += loss_t
+                    # loss_sum[t] += loss_t.item()
+                    # acc_sum[t] += acc_t.item()
+
+                # backward + optimize only if in training phase
+                if phase == 'train':
+                    loss.backward()
+                    optimizer.step()
+                    iter_num += 1
+
+                running_loss += loss.item()
+                outputs = outputs.detach().to('cpu').numpy()
+                labels = labels.detach().to('cpu').numpy()
+
+                for i in range(outputs.shape[0]):
+                    output_list.append(outputs[i].tolist())
+                    label_list.append(labels[i].tolist())
+
+                if idx % 100 == 0 and idx != 0:
+                    if phase == 'train':
+                        writer.add_scalar('loss/train_batch', loss.item() / outputs.shape[0], iter_num)
+                        try:
+                            auc = roc_auc_score(np.array(label_list[-100 * args.batch_size:]),
+                                                np.array(output_list[-100 * args.batch_size:]))
+                            writer.add_scalar('auc/train_batch', auc, iter_num)
+                        except:
+                            pass
+
+            epoch_loss = running_loss / dataset_sizes[phase]
+            try:
+                epoch_auc_ave = roc_auc_score(np.array(label_list), np.array(output_list))
+                epoch_auc = roc_auc_score(np.array(label_list), np.array(output_list), average=None)
+            except:
+                epoch_auc_ave = 0
+                epoch_auc = [0 for _ in range(len(class_names))]
+
+            if phase == 'val':
+                writer.add_scalar('loss/validation', epoch_loss, epoch)
+                writer.add_scalar('auc/validation', epoch_auc_ave, epoch)
+            if phase == 'train':
+                writer.add_scalar('loss/train', epoch_loss, epoch)
+                writer.add_scalar('auc/train', epoch_auc_ave, epoch)
+
+            log_str = ''
+            log_str += 'Loss: {:.4f} AUC: {:.4f}  \n\n'.format(
+                epoch_loss, epoch_auc_ave)
+
+            for i, c in enumerate(class_names):
+                log_str += '{}: {:.4f}  \n'.format(c, epoch_auc[i])
+
+            log_str += '\n'
+            if phase == 'val':
+                print("\n\nValidation Phase ")
+            else:
+                print("\n\nTraining Phase ")
+
+            print(log_str)
+            writer.add_text('log', log_str, iter_num)
+            print("Best validation average AUC :", best_auc_ave)
+            print("Average AUC of current epoch :", epoch_auc_ave)
+
+            # save model for validation
+            if phase == 'val' and epoch_auc_ave > best_auc_ave:
+                best_auc = epoch_auc
+                print("Rewriting model with AUROC :", round(best_auc_ave, 4), " by model with AUROC : ",
+                      round(epoch_auc_ave, 4))
+                best_auc_ave = epoch_auc_ave
+                print('Model saved to %s' % bestmodel_file)
+                print("Saving the best checkpoint")
+                SaveModel(epoch, model, optimizer, best_auc_ave, bestmodel_file)
+
+            if phase == 'train' and epoch % 1 == 0:
+                SaveModel(epoch, model, optimizer, best_auc_ave, checkpoint_file)
+
+        print()
+
+    time_elapsed = time.time() - since
+    print('Training complete in {:.0f}m {:.0f}s'.format(
+        time_elapsed // 60, time_elapsed % 60))
+    print('Best val AUC: {:4f}'.format(best_auc_ave))
+    print()
+    for i, c in enumerate(class_names):
+        print('{}: {:.4f} '.format(c, best_auc[i]))
+
+    # load best model weights
+    model.load_state_dict(best_model_wts)
+
+    return model
+
 if __name__ == '__main__':
     args = parser.parse_args()
 
@@ -527,47 +721,22 @@ if __name__ == '__main__':
     # # training_abnormal(model, args)
     # training(model, args)
 
-    args.backbone = "ResNet18"
-    args.batch_size = 96
-    args.pretrained = True
-    args.global_pool = 'AVG'
-    print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
-          " \n Number of classes : {} \n Global Pooling method :{} \n\n"
-          .format(args.backbone, str(args.pretrained),  args.attention_map,  args.num_classes, args.global_pool))
-    model = select_model(args)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        model = DataParallel(model)
-    model.to(device)
-    training(model, args)
-    eval_function(args, model)
 
-    args.pretrained = False
+
+    args.pretrained = True
     print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
           " \n Number of classes : {} \n Global Pooling method :{} \n\n"
           .format(args.backbone, str(args.pretrained),  args.attention_map, args.num_classes, args.global_pool))
-    model = select_model(args)
+    #model = select_model(args)
+    model = PCAM_Model(args)
     if torch.cuda.device_count() > 1:
         print("Let's use", torch.cuda.device_count(), "GPUs!")
         model = DataParallel(model)
     model.to(device)
-    training(model, args)
+    training_PCAM(model, args)
     eval_function(args, model)
 
-    args.global_pool = 'MAX'
-    args.pretrained = True
-    print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
-          " \n Number of classes : {} \n Global Pooling method :{} \n\n"
-          .format(args.backbone, str(args.pretrained), args.attention_map, args.num_classes, args.global_pool))
-    model = select_model(args)
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        model = DataParallel(model)
-    model.to(device)
-    training(model, args)
-    eval_function(args, model)
-
+    args.global_pool = 'AVG'
     args.pretrained = False
     print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
           " \n Number of classes : {} \n Global Pooling method :{} \n\n"
@@ -581,23 +750,12 @@ if __name__ == '__main__':
     eval_function(args, model)
 
     args.global_pool = 'LSE'
-    args.pretrained = True
-    print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
-          " \n Number of classes : {} \n Global Pooling method :{} \n\n"
-          .format(args.backbone, str(args.pretrained), args.attention_map, args.num_classes, args.global_pool))
-    model = select_model(args)
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        model = DataParallel(model)
-    model.to(device)
-    training(model, args)
-    eval_function(args, model)
-
     args.pretrained = False
     print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
           " \n Number of classes : {} \n Global Pooling method :{} \n\n"
           .format(args.backbone, str(args.pretrained), args.attention_map, args.num_classes, args.global_pool))
-    model = select_model(args)
+    # model = select_model(args)
+    model = PCAM_Model(args)
     if torch.cuda.device_count() > 1:
         print("Let's use", torch.cuda.device_count(), "GPUs!")
         model = DataParallel(model)

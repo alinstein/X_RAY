@@ -2,6 +2,22 @@ import torch
 from torch import nn
 
 
+class PcamPool(nn.Module):
+
+    def __init__(self):
+        super(PcamPool, self).__init__()
+
+    def forward(self, feat_map, logit_map):
+        assert logit_map is not None
+
+        prob_map = torch.sigmoid(logit_map)
+        weight_map = prob_map / prob_map.sum(dim=2, keepdim=True)\
+            .sum(dim=3, keepdim=True)
+        feat = (feat_map * weight_map).sum(dim=2, keepdim=True)\
+            .sum(dim=3, keepdim=True)
+
+        return feat
+
 class LogSumExpPool(nn.Module):
 
     def __init__(self, gamma):
@@ -96,33 +112,32 @@ class LinearPool(nn.Module):
 
 
 class GlobalPool(nn.Module):
-
     def __init__(self, cfg):
         super(GlobalPool, self).__init__()
         self.cfg = cfg
-        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.maxpool = nn.AdaptiveMaxPool2d((1, 1))
-        self.exp_pool = ExpPool()
-        self.linear_pool = LinearPool()
-        self.lse_pool = LogSumExpPool(cfg.lse_gamma)
+        if self.cfg.global_pool == 'AVG':
+            self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        elif self.cfg.global_pool == 'MAX':
+            self.maxpool = nn.AdaptiveMaxPool2d((1, 1))
+        elif self.cfg.global_pool == 'PCAM':
+            self.pcampool = PcamPool()
+        elif self.cfg.global_pool == 'EXP':
+            self.exp_pool = ExpPool()
+        elif self.cfg.global_pool == 'LINEAR':
+            self.linear_pool = LinearPool()
+        elif self.cfg.global_pool == 'LSE':
+            self.lse_pool = LogSumExpPool(cfg.lse_gamma)
 
     def cuda(self, device=None):
         return self._apply(lambda t: t.cuda(device))
 
-    def forward(self, feat_map):
+    def forward(self, feat_map, logit_map=None):
         if self.cfg.global_pool == 'AVG':
             return self.avgpool(feat_map)
         elif self.cfg.global_pool == 'MAX':
             return self.maxpool(feat_map)
-        elif self.cfg.global_pool == 'AVG_MAX':
-            a = self.avgpool(feat_map)
-            b = self.maxpool(feat_map)
-            return torch.cat((a, b), 1)
-        elif self.cfg.global_pool == 'AVG_MAX_LSE':
-            a = self.avgpool(feat_map)
-            b = self.maxpool(feat_map)
-            c = self.lse_pool(feat_map)
-            return torch.cat((a, b, c), 1)
+        elif self.cfg.global_pool == 'PCAM':
+            return self.pcampool(feat_map, logit_map)
         elif self.cfg.global_pool == 'EXP':
             return self.exp_pool(feat_map)
         elif self.cfg.global_pool == 'LINEAR':

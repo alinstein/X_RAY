@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import torch
-from X_RAY.cxr8.model import DenseNet121, ResNet18, EfficientNet_model, custom_xray
+from X_RAY.cxr8.model import DenseNet121, ResNet18, EfficientNet_model, custom_xray, resnet50_wildcat
 
 def model_name(args):
     if args.attention_map is None:
@@ -20,6 +20,8 @@ def select_model(args):
         return EfficientNet_model(args)
     if args.backbone == "custom":
         return custom_xray(args)
+    if args.backbone == "resnet50_wildcat":
+        return resnet50_wildcat(args)
 
 def visualize_cam(mask, img):
     """Make heatmap from mask and synthesize GradCAM result image using heatmap and img.
