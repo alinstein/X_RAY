@@ -11,12 +11,13 @@ class PcamPool(nn.Module):
         assert logit_map is not None
 
         prob_map = torch.sigmoid(logit_map)
-        weight_map = prob_map / prob_map.sum(dim=2, keepdim=True)\
+        weight_map = prob_map / prob_map.sum(dim=2, keepdim=True) \
             .sum(dim=3, keepdim=True)
-        feat = (feat_map * weight_map).sum(dim=2, keepdim=True)\
+        feat = (feat_map * weight_map).sum(dim=2, keepdim=True) \
             .sum(dim=3, keepdim=True)
 
         return feat
+
 
 class LogSumExpPool(nn.Module):
 

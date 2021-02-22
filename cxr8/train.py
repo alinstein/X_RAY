@@ -133,7 +133,7 @@ def training(model, args):
     writer.add_text('log', str(args), 0)
     if args.backbone == 'resnet50_wildcat':
         params = model.get_config_optim(args.lr, 0.5)
-    else :
+    else:
         params = model.parameters()
     optimizer = get_optimizer(params, args)
     dataloaders, dataset_sizes, class_names = make_dataLoader(args)
@@ -197,21 +197,21 @@ def training(model, args):
                 else:
                     torch.set_grad_enabled(False)
 
-                # # calculate weight for loss
-                # P = 0
-                # N = 0
-                # for label in labels:
-                #     for v in label:
-                #         if int(v) == 1:
-                #             P += 1
-                #         else:
-                #             N += 1
-                # if P != 0 and N != 0:
-                #     BP = (P + N) / P
-                #     BN = (P + N) / N
-                #     weights = torch.tensor([BP, BN], dtype=torch.float).to(device)
-                # else:
-                weights = None
+                # calculate weight for loss
+                P = 0
+                N = 0
+                for label in labels:
+                    for v in label:
+                        if int(v) == 1:
+                            P += 1
+                        else:
+                            N += 1
+                if P != 0 and N != 0:
+                    BP = (P + N) / P
+                    BN = (P + N) / N
+                    weights = torch.tensor([BP, BN], dtype=torch.float).to(device)
+                else:
+                    weights = None
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -372,8 +372,7 @@ def training_abnormal(model, args):
                 labels = labels.unsqueeze(axis=1)
 
                 # calculate weight for loss
-                P = 0
-                N = 0
+                P, N = 0, 0
                 for label in labels:
                     for v in label:
                         if int(v) == 1:
@@ -423,17 +422,15 @@ def training_abnormal(model, args):
                                                 np.array(output_list[-100 * args.batch_size:]))
                             print('\nAUC/Train', auc)
                             print('Batch Loss', sum(loss_list) / len(loss_list))
-                            print(((((np.array(output_list) > 0.5) * 1) == np.array(label_list)) * 1).mean())
+                            print('Batch Accuracy', ((((np.array(output_list) > 0.5) * 1)
+                                                      == np.array(label_list)) * 1).mean())
                             loss_list = []
                             writer.add_scalar('AUC/Train', auc, iter_num)
                         except:
                             pass
             epoch_loss = running_loss / dataset_sizes[phase]
 
-            try:
-                epoch_auc_ave = roc_auc_score(np.array(label_list), np.array(output_list))
-            except:
-                epoch_auc_ave = 0
+            epoch_auc_ave = roc_auc_score(np.array(label_list), np.array(output_list))
 
             if phase == 'val':
                 writer.add_scalar('Loss/Validation', epoch_loss, iter_num)
@@ -441,7 +438,6 @@ def training_abnormal(model, args):
 
             log_str = ''
             log_str += 'Loss: {:.4f} AUC: {:.4f}  \n\n'.format(epoch_loss, epoch_auc_ave)
-
             log_str += '\n'
             if phase == 'val':
                 print("\n\nValidation Phase ")
@@ -472,41 +468,48 @@ def training_abnormal(model, args):
         time_elapsed // 60, time_elapsed % 60))
     print('Best val AUC: {:4f}'.format(best_auc_ave))
     print()
-
     # load best model weights
     model.load_state_dict(best_model_wts)
-
     return model
 
 
 def get_loss(output, target, index, device, cfg):
-
     target = target[:, index].view(-1)
-    # pos_weight = torch.from_numpy(
-    #     np.array(cfg.pos_weight,
-    #              dtype=np.float32)).to(device).type_as(target)
-    # if cfg.batch_weight:
     if target.sum() == 0:
         loss = torch.tensor(0., requires_grad=True).to(device)
     else:
         weight = (target.size()[0] - target.sum()) / target.sum()
         loss = F.binary_cross_entropy_with_logits(
-            output[:,index].view(-1), target.float(), pos_weight=weight)
-    # else:
-    #     loss = torch.nn.F.binary_cross_entropy_with_logits(
-    #         output[index].view(-1), target, pos_weight=pos_weight[index])
-
-    label = torch.sigmoid(output[:,index].view(-1)).ge(0.5).float()
+            output[:, index].view(-1), target.float(), pos_weight=weight)
+    label = torch.sigmoid(output[:, index].view(-1)).ge(0.5).float()
     acc = (target == label).float().sum() / len(label)
-
     return (loss, acc)
+
+
+def lr_schedule(lr, lr_factor, epoch_now, lr_epochs):
+    """
+    Learning rate schedule with respect to epoch
+    lr: float, initial learning rate
+    lr_factor: float, decreasing factor every epoch_lr
+    epoch_now: int, the current epoch
+    lr_epochs: list of int, decreasing every epoch in lr_epochs
+    return: lr, float, scheduled learning rate.
+    """
+    count = 0
+    for epoch in lr_epochs:
+        if epoch_now >= epoch:
+            count += 1
+            continue
+        break
+    return lr * np.power(lr_factor, count)
+
 
 def training_PCAM(model, args):
     writer = SummaryWriter(log_dir=os.path.join(args.log_dir, model_name(args)))
     writer.add_text('log', str(args), 0)
     if args.backbone == 'resnet50_wildcat':
         params = model.get_config_optim(args.lr, 0.5)
-    else :
+    else:
         params = model.parameters()
     optimizer = get_optimizer(params, args)
     dataloaders, dataset_sizes, class_names = make_dataLoader(args)
@@ -543,7 +546,6 @@ def training_PCAM(model, args):
         print('-' * 10)
 
         for phase in ['train', 'val']:
-
             # Only Validation in every 5 cycles
             if (phase == 'val') and (epoch % 1 != 0):
                 continue
@@ -551,16 +553,16 @@ def training_PCAM(model, args):
                 model.train(True)  # Set model to training mode
             else:
                 model.train(False)  # Set model to evaluate mode
-
             running_loss = 0.0
             output_list = []
             label_list = []
-
+            lr = lr_schedule(args.lr, 0.1, epoch,
+                             [4, 8, 12])
+            for param_group in optimizer.param_groups:
+                param_group['lr'] = lr
             # Iterate over data.
             for idx, data in enumerate(tqdm(dataloaders[phase])):
 
-                # if idx >= 10:
-                #     break
                 images, labels, names = data
                 images = images.to(device)
                 labels = labels.to(device)
@@ -572,15 +574,13 @@ def training_PCAM(model, args):
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
-                outputs, _ = model(images)
+                outputs, logit_map = model(images)
 
                 # classification loss
                 loss = 0
                 for t in range(args.num_classes):
                     loss_t, acc_t = get_loss(outputs, labels, t, device, args)
                     loss += loss_t
-                    # loss_sum[t] += loss_t.item()
-                    # acc_sum[t] += acc_t.item()
 
                 # backward + optimize only if in training phase
                 if phase == 'train':
@@ -667,6 +667,7 @@ def training_PCAM(model, args):
 
     return model
 
+
 if __name__ == '__main__':
     args = parser.parse_args()
 
@@ -721,44 +722,26 @@ if __name__ == '__main__':
     # # training_abnormal(model, args)
     # training(model, args)
 
+    # args.pretrained = True
+    # print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
+    #       " \n Number of classes : {} \n Global Pooling method :{} \n\n"
+    #       .format(args.backbone, str(args.pretrained),  args.attention_map, args.num_classes, args.global_pool))
+    # model = select_model(args)
+    # model = training_abnormal(args)
+    # if torch.cuda.device_count() > 1:
+    #     print("Let's use", torch.cuda.device_count(), "GPUs!")
+    #     model = DataParallel(model)
+    # model.to(device)
+    # training_PCAM(model, args)
+    # model = eval_function(args, model)
 
-
-    args.pretrained = True
     print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
           " \n Number of classes : {} \n Global Pooling method :{} \n\n"
-          .format(args.backbone, str(args.pretrained),  args.attention_map, args.num_classes, args.global_pool))
-    #model = select_model(args)
-    model = PCAM_Model(args)
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        model = DataParallel(model)
-    model.to(device)
-    training_PCAM(model, args)
-    eval_function(args, model)
-
-    args.global_pool = 'AVG'
-    args.pretrained = False
-    print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
-          " \n Number of classes : {} \n Global Pooling method :{} \n\n"
-          .format(args.backbone, str(args.pretrained),  args.attention_map, args.num_classes, args.global_pool))
+          .format(args.backbone, str(args.pretrained), args.attention_map, args.num_classes, args.global_pool))
     model = select_model(args)
     if torch.cuda.device_count() > 1:
         print("Let's use", torch.cuda.device_count(), "GPUs!")
         model = DataParallel(model)
     model.to(device)
-    training(model, args)
-    eval_function(args, model)
-
-    args.global_pool = 'LSE'
-    args.pretrained = False
-    print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
-          " \n Number of classes : {} \n Global Pooling method :{} \n\n"
-          .format(args.backbone, str(args.pretrained), args.attention_map, args.num_classes, args.global_pool))
-    # model = select_model(args)
-    model = PCAM_Model(args)
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        model = DataParallel(model)
-    model.to(device)
-    training(model, args)
+    model = training_abnormal(model, args)
     eval_function(args, model)

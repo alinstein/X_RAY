@@ -44,16 +44,10 @@ class Grad_CAM(object):
             self.activations['value'] = output
             return None
 
-        if 'vgg' in model_type.lower():
-            target_layer = find_vgg_layer(self.model_arch, layer_name)
-        elif 'resnet' in model_type.lower():
+        if 'resnet' in model_type.lower():
             target_layer = find_resnet_layer(self.model_arch, layer_name)
         elif 'densenet' in model_type.lower():
             target_layer = find_densenet_layer(self.model_arch, layer_name)
-        elif 'alexnet' in model_type.lower():
-            target_layer = find_alexnet_layer(self.model_arch, layer_name)
-        elif 'squeezenet' in model_type.lower():
-            target_layer = find_squeezenet_layer(self.model_arch, layer_name)
 
         target_layer.register_forward_hook(forward_hook)
         target_layer.register_backward_hook(backward_hook)

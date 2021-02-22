@@ -1,4 +1,5 @@
 dataset/images/*
+dataset/images_resized/*
 log/*
 savedModels/*
 nohup.out
@@ -7,4 +8,10 @@ __pycache__/*
 
 Training.ipynb
 runs/*
+ROC Curves/*
+heatmap_output/
+bounding_box_images/
+outputs_logs/
+thresholds.npy
+
 
