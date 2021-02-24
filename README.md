@@ -1,5 +1,5 @@
 # Chest X-Ray
-![Results](https://github.com/alinstein/X_RAY/pictures/blob/master/sample.png)
+![Results](https://github.com/alinstein/X_RAY/tree/main/pictures/sample.png)
 Detect common thoracic diseases from chest X-ray images. The dataset used here is [NIH Chest X-ray dataset](https://www.nih.gov/news-events/news-releases/nih-clinical-center-provides-one-largest-publicly-available-chest-x-ray-datasets-scientific-community).
 Localize the plausible disease location in X-ray image using CNN model trained on images labels only.
 
