@@ -1,4 +1,4 @@
-# Weakly supervised Classification and localization of Chest X-ray images.
+# Weakly supervised Classification and Localization of Chest X-ray images.
 
 ![Results](https://github.com/alinstein/X_RAY/blob/main/pictures/sample.png)
 
