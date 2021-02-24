@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-
+# Referenced from https://github.com/jfhealthcare/Chexpert
 class PcamPool(nn.Module):
 
     def __init__(self):
@@ -47,71 +47,6 @@ class LogSumExpPool(nn.Module):
         return m + 1 / g * torch.log(area * torch.sum(
             torch.exp(g * value0), dim=(-1, -2), keepdim=True))
 
-
-class ExpPool(nn.Module):
-
-    def __init__(self):
-        super(ExpPool, self).__init__()
-
-    def forward(self, feat_map):
-        """
-        Numerically stable implementation of the operation
-        Arguments:
-            feat_map(Tensor): tensor with shape (N, C, H, W)
-            return(Tensor): tensor with shape (N, C, 1, 1)
-        """
-
-        EPSILON = 1e-7
-        (N, C, H, W) = feat_map.shape
-        m, _ = torch.max(
-            feat_map, dim=-1, keepdim=True)[0].max(dim=-2, keepdim=True)
-
-        # caculate the sum of exp(xi)
-        # TODO: split dim=(-1, -2) for onnx.export
-        sum_exp = torch.sum(torch.exp(feat_map - m),
-                            dim=(-1, -2), keepdim=True)
-
-        # prevent from dividing by zero
-        sum_exp += EPSILON
-
-        # caculate softmax in shape of (H,W)
-        exp_weight = torch.exp(feat_map - m) / sum_exp
-        weighted_value = feat_map * exp_weight
-
-        # TODO: split dim=(-1, -2) for onnx.export
-        return torch.sum(weighted_value, dim=(-1, -2), keepdim=True)
-
-
-class LinearPool(nn.Module):
-
-    def __init__(self):
-        super(LinearPool, self).__init__()
-
-    def forward(self, feat_map):
-        """
-        Arguments:
-            feat_map(Tensor): tensor with shape (N, C, H, W)
-            return(Tensor): tensor with shape (N, C, 1, 1)
-        """
-        EPSILON = 1e-7
-        (N, C, H, W) = feat_map.shape
-
-        # sum feat_map's last two dimention into a scalar
-        # so the shape of sum_input is (N,C,1,1)
-        # TODO: split dim=(-1, -2) for onnx.export
-        sum_input = torch.sum(feat_map, dim=(-1, -2), keepdim=True)
-
-        # prevent from dividing by zero
-        sum_input += EPSILON
-
-        # caculate softmax in shape of (H,W)
-        linear_weight = feat_map / sum_input
-        weighted_value = feat_map * linear_weight
-
-        # TODO: split dim=(-1, -2) for onnx.export
-        return torch.sum(weighted_value, dim=(-1, -2), keepdim=True)
-
-
 class GlobalPool(nn.Module):
     def __init__(self, cfg):
         super(GlobalPool, self).__init__()
@@ -122,10 +57,6 @@ class GlobalPool(nn.Module):
             self.maxpool = nn.AdaptiveMaxPool2d((1, 1))
         elif self.cfg.global_pool == 'PCAM':
             self.pcampool = PcamPool()
-        elif self.cfg.global_pool == 'EXP':
-            self.exp_pool = ExpPool()
-        elif self.cfg.global_pool == 'LINEAR':
-            self.linear_pool = LinearPool()
         elif self.cfg.global_pool == 'LSE':
             self.lse_pool = LogSumExpPool(cfg.lse_gamma)
 

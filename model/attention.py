@@ -2,8 +2,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-#from model.utils import get_norm
-
+# Referenced from https://github.com/jfhealthcare/Chexpert
 def get_norm(norm_type, num_features, num_groups=32, eps=1e-5):
     if norm_type == 'BatchNorm':
         return nn.BatchNorm2d(num_features, eps=eps)
@@ -14,7 +13,8 @@ def get_norm(norm_type, num_features, num_groups=32, eps=1e-5):
                                  affine=True, track_running_stats=True)
     else:
         raise Exception('Unknown Norm Function : {}'.format(norm_type))
-        
+
+
 class Conv2dNormRelu(nn.Module):
 
     def __init__(self, in_ch, out_ch, kernel_size=3, stride=1, padding=0,
