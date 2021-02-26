@@ -673,56 +673,28 @@ def training_PCAM(model, args):
 if __name__ == '__main__':
     args = parser.parse_args()
 
-    # print("\n\n Configrations \n Backbone : {} \n Attention used :{} \n Number of classes : {}"
-    #       "\n Global Pooling method :{} \n\n".format(args.backbone, args.attention_map, args.num_classes,
-    #                                                  args.global_pool))
-    # model = select_model(args)
-    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # if torch.cuda.device_count() > 1:
-    #     print("Let's use", torch.cuda.device_count(), "GPUs!")
-    #     model = DataParallel(model)
-    # model.to(device)
-    # # training_abnormal(model, args)
-    # training(model, args)
+    args.global_pool = 'LSE'
+    print("\n\n Configrations \n Backbone : {} \n Attention used :{} \n Number of classes : {}"
+          "\n Global Pooling method :{} \n\n".format(args.backbone, args.attention_map, args.num_classes,
+                                                     args.global_pool))
+    model = select_model(args)
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.device_count() > 1:
+        print("Let's use", torch.cuda.device_count(), "GPUs!")
+        model = DataParallel(model)
+    model.to(device)
+    training(model, args)
     #
-    # args.global_pool = 'MAX'
-    # print("\n\n Configrations \n Backbone : {} \n Attention used :{} \n Number of classes : {}"
-    #       "\n Global Pooling method :{} \n\n".format(args.backbone, args.attention_map, args.num_classes,
-    #                                                  args.global_pool))
+    # print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
+    #       " \n Number of classes : {} \n Global Pooling method :{} \n\n"
+    #       .format(args.backbone, str(args.pretrained), args.attention_map, args.num_classes, args.global_pool))
     # model = select_model(args)
-    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # if torch.cuda.device_count() > 1:
     #     print("Let's use", torch.cuda.device_count(), "GPUs!")
     #     model = DataParallel(model)
     # model.to(device)
-    # # training_abnormal(model, args)
-    # training(model, args)
-    #
-    # args.global_pool = 'LSE'
-    # print("\n\n Configrations \n Backbone : {} \n Attention used :{} \n Number of classes : {}"
-    #       "\n Global Pooling method :{} \n\n".format(args.backbone, args.attention_map, args.num_classes,
-    #                                                  args.global_pool))
-    # model = select_model(args)
-    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # if torch.cuda.device_count() > 1:
-    #     print("Let's use", torch.cuda.device_count(), "GPUs!")
-    #     model = DataParallel(model)
-    # model.to(device)
-    # # training_abnormal(model, args)
-    # training(model, args)
-    # args.backbone = "EfficientNet"
-    # args.batch_size = 32
-    # print("\n\n Configrations \n Backbone : {} \n Attention used :{} \n Number of classes : {}"
-    #       "\n Global Pooling method :{} \n\n".format(args.backbone, args.attention_map, args.num_classes,
-    #                                                  args.global_pool))
-    # model = select_model(args)
-    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # if torch.cuda.device_count() > 1:
-    #     print("Let's use", torch.cuda.device_count(), "GPUs!")
-    #     model = DataParallel(model)
-    # model.to(device)
-    # # training_abnormal(model, args)
-    # training(model, args)
+    # model = training_abnormal(model, args)
+    # eval_function(args, model)
 
     # args.pretrained = True
     # print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
@@ -736,14 +708,3 @@ if __name__ == '__main__':
     # model.to(device)
     # training_PCAM(model, args)
     # model = eval_function(args, model)
-
-    print("\n\n Configrations \n Backbone : {} \n Pretrained weights : {} \n Attention used :{}"
-          " \n Number of classes : {} \n Global Pooling method :{} \n\n"
-          .format(args.backbone, str(args.pretrained), args.attention_map, args.num_classes, args.global_pool))
-    model = select_model(args)
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        model = DataParallel(model)
-    model.to(device)
-    model = training_abnormal(model, args)
-    eval_function(args, model)

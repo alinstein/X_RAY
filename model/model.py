@@ -41,6 +41,7 @@ class DenseNet121(nn.Module):
     """Model modified.
     The architecture of our model is the same as standard DenseNet121
     except the classifier layer which has an additional sigmoid function.
+    Densely Connected Convolutional Networks" <https://arxiv.org/pdf/1608.06993.pdf>
     """
 
     def __init__(self, cfg):
@@ -59,9 +60,7 @@ class DenseNet121(nn.Module):
 
     def _init_attention_map(self):
         setattr(self, "attention_map_1", AttentionMap(self.cfg, self.num_ftrs))
-        setattr(self, "attention_map_2", AttentionMap(self.cfg, self.num_ftrs))
-        setattr(self, "attention_map_3", AttentionMap(self.cfg, self.num_ftrs))
-        setattr(self, "attention_map_4", AttentionMap(self.cfg, self.num_ftrs))
+
 
     def forward(self, x):
         """
