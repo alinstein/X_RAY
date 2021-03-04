@@ -584,12 +584,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-
-    print("#########################################################################")
-    print("#########################################################################")
-    print("                             LSE pooling")
-    print("#########################################################################")
-    print("#########################################################################")
     pathModel = os.path.join(current_location, "savedModels", "compute",
                              "ResNet18_True_LSE_IMG_SIZE_512_num_class_8_best_model.pth")
     h = HeatmapGenerator(pathModel, save_plots=False, args=args)
@@ -645,115 +639,7 @@ if __name__ == '__main__':
     plt.show()
     print("Threshold " + str(x_max_index) + " and at alpha value " + str(y_max_index))
 
-    print("#########################################################################")
-    print("#########################################################################")
-    print("                               MAX Pooling")
-    print("#########################################################################")
-    print("#########################################################################")
-    args.global_pool = 'MAX'
-    h = HeatmapGenerator(pathModel, save_plots=False, args=args)
-    pathModel = os.path.join(current_location, "savedModels", "compute",
-                             "densenet121_True_MAX_IMG_SIZE_224_num_class_8_best_model.pth")
-    h.generate(plot=True, factor=1.9, threshold_high=0.75)
-    for x in factors:
-        for y in threshold_highs:
-            h.generate(plot=False, factor=x, threshold_high=y)
 
-    plt.figure()
-    x = factors
-    y = threshold_highs
-    X, Y = np.meshgrid(x, y)  # grid of point
-    Z = np.array(h.iou_GradCAMCPP).reshape(x.shape[0], y.shape[0])
-    plt.xlabel('alpha value')
-    plt.ylabel('threshold')
-    im = plt.imshow(Z, cmap=plt.cm.RdBu, extent=[y[0], y[-1], x[-1], x[0]])
-    plt.colorbar(im)  # adding the colobar on the right
-    x_max_index = x[np.array(h.iou_GradCAMCPP).argmax() // y.shape[0]]
-    y_max_index = y[np.array(h.iou_GradCAMCPP).argmax() % y.shape[0]]
-    plt.title("MAX GradCAM++ MAX IOU is : " + str(np.array(h.iou_GradCAMCPP).max()))
-    plt.show()
-    print("Threshold " + str(x_max_index) + " and alpha value " + str(y_max_index))
-
-    plt.figure()
-    X, Y = np.meshgrid(x, y)  # grid of point
-    Z = np.array(h.iou_GradCAM).reshape(x.shape[0], y.shape[0])
-    plt.xlabel('alpha value')
-    plt.ylabel('threshold')
-    im = plt.imshow(Z, cmap=plt.cm.RdBu, extent=[y[0], y[-1], x[-1], x[0]])
-    plt.colorbar(im)  # adding the colobar on the right
-    x_max_index = x[np.array(h.iou_GradCAM).argmax() // y.shape[0]]
-    y_max_index = y[np.array(h.iou_GradCAM).argmax() % y.shape[0]]
-    plt.title("MAX GradCAM MAX IOU is : " + str(np.array(h.iou_GradCAM).max()))
-    plt.show()
-    print("Threshold " + str(x_max_index) + " and at alpha value " + str(y_max_index))
-
-    plt.figure()
-    X, Y = np.meshgrid(x, y)  # grid of point
-    Z = np.array(h.iou_CAM).reshape(x.shape[0], y.shape[0])
-    plt.xlabel('alpha value')
-    plt.ylabel('threshold')
-    im = plt.imshow(Z, cmap=plt.cm.RdBu, extent=[y[0], y[-1], x[-1], x[0]])
-    plt.colorbar(im)  # adding the colobar on the right
-    x_max_index = x[np.array(h.iou_CAM).argmax() // y.shape[0]]
-    y_max_index = y[np.array(h.iou_CAM).argmax() % y.shape[0]]
-    plt.title("MAX CAM MAX IOU is : " + str(np.array(h.iou_CAM).max()))
-    plt.show()
-    print("Threshold " + str(x_max_index) + " and at alpha value " + str(y_max_index))
-
-    print("#########################################################################")
-    print("#########################################################################")
-    print("                           AVG Pooling")
-    print("#########################################################################")
-    print("#########################################################################")
-    args.global_pool = 'AVG'
-    pathModel = os.path.join(current_location, "savedModels", "compute",
-                             "densenet121_True_AVG_IMG_SIZE_224_num_class_8_best_model.pth")
-    h = HeatmapGenerator(pathModel, save_plots=False, args=args)
-
-    for x in factors:
-        for y in threshold_highs:
-            h.generate(plot=False, factor=x, threshold_high=y)
-
-    plt.figure()
-    x = factors
-    y = threshold_highs
-    X, Y = np.meshgrid(x, y)  # grid of point
-    Z = np.array(h.iou_GradCAMCPP).reshape(x.shape[0], y.shape[0])
-    plt.xlabel('alpha value')
-    plt.ylabel('threshold')
-    im = plt.imshow(Z, cmap=plt.cm.RdBu, extent=[y[0], y[-1], x[-1], x[0]])
-    plt.colorbar(im)  # adding the colobar on the right
-    x_max_index = x[np.array(h.iou_GradCAMCPP).argmax() // y.shape[0]]
-    y_max_index = y[np.array(h.iou_GradCAMCPP).argmax() % y.shape[0]]
-    plt.title("AVG GradCAM++ MAX IOU is : " + str(np.array(h.iou_GradCAMCPP).max()))
-    plt.show()
-    print("Threshold " + str(x_max_index) + " and alpha value " + str(y_max_index))
-
-    plt.figure()
-    X, Y = np.meshgrid(x, y)  # grid of point
-    Z = np.array(h.iou_GradCAM).reshape(x.shape[0], y.shape[0])
-    plt.xlabel('alpha value')
-    plt.ylabel('threshold')
-    im = plt.imshow(Z, cmap=plt.cm.RdBu, extent=[y[0], y[-1], x[-1], x[0]])
-    plt.colorbar(im)  # adding the colobar on the right
-    x_max_index = x[np.array(h.iou_GradCAM).argmax() // y.shape[0]]
-    y_max_index = y[np.array(h.iou_GradCAM).argmax() % y.shape[0]]
-    plt.title("AVG GradCAM MAX IOU is : " + str(np.array(h.iou_GradCAM).max()))
-    plt.show()
-    print("Threshold " + str(x_max_index) + " and at alpha value " + str(y_max_index))
-
-    plt.figure()
-    X, Y = np.meshgrid(x, y)  # grid of point
-    Z = np.array(h.iou_CAM).reshape(x.shape[0], y.shape[0])
-    plt.xlabel('alpha value')
-    plt.ylabel('threshold')
-    im = plt.imshow(Z, cmap=plt.cm.RdBu, extent=[y[0], y[-1], x[-1], x[0]])
-    plt.colorbar(im)  # adding the colobar on the right
-    x_max_index = x[np.array(h.iou_CAM).argmax() // y.shape[0]]
-    y_max_index = y[np.array(h.iou_CAM).argmax() % y.shape[0]]
-    plt.title("AVG CAM MAX IOU is : " + str(np.array(h.iou_CAM).max()))
-    plt.show()
-    print("Threshold " + str(x_max_index) + " and at alpha value " + str(y_max_index))
 
 
 

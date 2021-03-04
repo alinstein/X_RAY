@@ -18,17 +18,20 @@ Following are implemented in this repository:
     
     pip install -r requirements.txt
 2. Download the dataset [here]((https://www.nih.gov/news-events/news-releases/nih-clinical-center-provides-one-largest-publicly-available-chest-x-ray-datasets-scientific-community)).
-3. Extract the images into directory `dataset/images` and recommend reducing the size of image from 1024x1024 before training unless training in high resolution. 
+3. Extract the images into directory `dataset/images` and recommend reducing the size of image from 1024x1024 before training. 
    This will speed up training significantly.
-4. Change the resolution, CNN architecture, batchsize, epochs, pooling layer, attention network etc in config.py.
-5. To train and evaluate the model run :
+4. Change the resolution, CNN architecture, batch size, epochs, pooling layer, attention network etc in config.py.
+5. To train and evaluate the multi-label classification model with 8 eight diseases, run :
+    
+        python train.py --num_classes=8 --batch_size=32 --multi_label=True --img_size=224 --epochs=20
+   
+   To train and evaluate the binary classification (abnormality) model, run :
+        
+        python train.py --num_classes=1 --batch_size=32 --multi_label=False --img_size=224 --epochs=20
 
-
-    python train.py
-    python eval.py
 
 6. To generate a heatmap of the disease, give CNN model's location in main function in heatMap_.py 
-   and check the configuration in config.py.
+   and check the configuration in config.py. Run the following :  
    
 
     python heatMap_.py

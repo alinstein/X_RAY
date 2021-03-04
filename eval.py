@@ -96,6 +96,14 @@ def compute_stats(gt, pred, cfg):
 
 
 def eval_function(args, model):
+    '''
+    This function accepts the CNN model and evaluate the model on the test set and make the predictions.
+
+    Parameters
+    ----------
+    args: configration file
+    model: the model to test
+    '''
     curve_path = "ROC Curves/"
     if args.num_classes == 1:
         CLASS_NAMES = ['Disease']
@@ -123,9 +131,9 @@ def eval_function(args, model):
     model.to(device)
     model.eval()
 
-    print("beginning...")
+    print("Beginning evaluation ")
     N_CLASSES = args.num_classes
-    print("test dataset loaded")
+    print("Test dataset loaded")
     cudnn.benchmark = True
 
     # initialize the ground truth and output tensor
@@ -150,6 +158,7 @@ def eval_function(args, model):
 
     AUROCs, roc_curves, mean_TPR, mean_TNR, mean_PPV, PPV_dict, TNR_dict, TPR_dict, mean_Hamming_loss \
         = compute_stats(gt, pred, args)
+
     AUROC_avg: None = np.array(AUROCs).mean()
     print('The average AUROC is {AUROC_avg:.3f}'.format(AUROC_avg=AUROC_avg))
     for i in range(N_CLASSES):
@@ -202,7 +211,7 @@ if __name__ == '__main__':
         model = model
     current_location = os.getcwd()
     pathModel = os.path.join(current_location, "savedModels", "compute",
-                             "densenet121_True_LSE_IMG_SIZE_512_num_class_8_best_model.pth")
+                             "ResNet18_True_AVG_IMG_SIZE_224_num_class_8_checkpoint.pth")
     modelCheckpoint = torch.load(pathModel)
     if num_GPU > 1:
         model.module.load_state_dict(modelCheckpoint['model_state_dict'])
