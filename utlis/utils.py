@@ -8,7 +8,7 @@ from X_RAY.model.model import DenseNet121, ResNet18, EfficientNet_model, custom_
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from torch.optim import SGD, Adadelta, Adagrad, Adam, RMSprop
-from X_RAY.dataset.dataset import CXRDataset, CXRDatasetBinary
+from X_RAY.dataset.dataset import CXRDataset, CXRDatasetBinary, ImageDataset
 from X_RAY.config import parser
 
 args = parser.parse_args()
@@ -212,6 +212,45 @@ def make_dataLoader(args):
                    for x in ['train', 'val']}
     dataset_sizes = {x: len(datasets[x]) for x in ['train', 'val']}
     class_names = datasets['train'].classes
+    print("Length of dataset ", dataset_sizes)
+    return dataloaders, dataset_sizes, class_names
+
+def make_dataLoader_chexpert(args):
+    """
+    Creates train and validation dataloader for multi-label classification.
+    The input images are augmented, resized and normalized.
+
+    Parameters
+    ----------
+    args : configuration file (argparse)
+
+    Returns
+    -------
+    dataloader: dict containing the train and validation dataloader.
+    dataset_sizes: dict containing the size of train dataloader and the size of validation dataloader.
+    class_names : the names of the diseases
+    """
+    trans = {'train': transforms.Compose([
+        transforms.Resize((args.img_size,args.img_size)),
+        transforms.ColorJitter(),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ]), 'val': transforms.Compose([
+        transforms.Resize((args.img_size,args.img_size)),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+    ])}
+    datasets = {'train': ImageDataset(args.data_root_dir, dataset_type='train', Num_classes=args.num_classes, transform=trans['train']),
+                'val': ImageDataset(args.data_root_dir, dataset_type='valid', Num_classes=args.num_classes, transform=trans['val'])}
+    dataloaders = {x: DataLoader(datasets[x], batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
+                   for x in ['train', 'val']}
+    dataset_sizes = {x: len(datasets[x]) for x in ['train', 'val']}
+    class_names = ['Atelectasis', 'Edema', 'Cardiomegaly', 'Consolidation', 'Pleural Effusion']
+    # class_names = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly', 'Lung Opacity',
+    #                  'Lung Lesion', 'Edema', 'Consolidation', 'Pneumonia', 'Atelectasis', 'Pneumothorax',
+    #                'Pleural Effusion', 'Pleural Other', 'Fracture', 'Support Devices']
+
     print("Length of dataset ", dataset_sizes)
     return dataloaders, dataset_sizes, class_names
 

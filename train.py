@@ -2,7 +2,6 @@ import torch
 import torch.nn.functional as F
 from tensorboardX import SummaryWriter
 
-
 from sklearn.metrics import roc_auc_score
 import numpy as np
 import time
@@ -10,7 +9,7 @@ from tqdm import tqdm
 import os
 
 from utlis.utils import model_name, select_model
-from utlis.utils import get_optimizer, make_dataLoader, LoadModel, lr_schedule
+from utlis.utils import get_optimizer, make_dataLoader, LoadModel, lr_schedule, make_dataLoader_chexpert
 from utlis.utils import weighted_BCELoss, SaveModel, make_dataLoader_binary, get_loss
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -31,7 +30,12 @@ def training(model, args):
     else:
         params = model.parameters()
     optimizer = get_optimizer(params, args)
-    dataloaders, dataset_sizes, class_names = make_dataLoader(args)
+    if args.dataset == "NIH":
+        dataloaders, dataset_sizes, class_names =  make_dataLoader(args)
+    elif args.dataset == 'ChesXpert':
+        dataloaders, dataset_sizes, class_names = make_dataLoader_chexpert(args)
+    else:
+        assert "Wrong dataset"
 
     if not os.path.exists(args.model_save_dir):
         os.makedirs(args.model_save_dir)
@@ -63,27 +67,33 @@ def training(model, args):
     for epoch in range(epoch_inti, args.epochs + 1):
         print('Epoch {}/{}'.format(epoch, args.epochs))
         print('-' * 10)
-
-        for phase in ['train', 'val']:
+        iter_num = 0
+        for phase in ['train','val']:
 
             # Only Validation in every 5 cycles
-            if (phase == 'val') and (epoch % 1 != 0):
-                continue
-            if phase == 'train':
+            if (phase == 'val') :
+                model.train(False)
+            elif phase == 'train':
                 model.train(True)  # Set model to training mode
-            else:
-                model.train(False)  # Set model to evaluate mode
+
 
             running_loss = 0.0
             output_list = []
             label_list = []
+            loss_list = []
 
             # Iterate over data.
             for idx, data in enumerate(tqdm(dataloaders[phase])):
 
+                if iter_num > 100 and phase == 'train':
+                    break
+
                 images, labels, names = data
                 images = images.to(device)
                 labels = labels.to(device)
+
+                mask = 1 * (labels >= 0)
+                mask = mask.to(device)
 
                 if phase == 'train':
                     torch.set_grad_enabled(True)
@@ -112,7 +122,19 @@ def training(model, args):
                 outputs = model(images)
 
                 # classification loss
-                loss = weighted_BCELoss(outputs, labels, weights=weights)
+                if args.weighted_loss:
+                    loss = weighted_BCELoss(outputs, labels, weights=weights)
+                else:
+                    loss_func = torch.nn.BCELoss(reduction='none')
+                    loss = loss_func(outputs[:, 0].unsqueeze(dim=-1),
+                                     torch.tensor(labels[:, 0].unsqueeze(dim=-1), dtype=torch.float))
+                    loss = torch.where((labels >= 0)[:, 0].unsqueeze(axis=-1), loss, torch.zeros_like(loss)).mean()
+                    for index in range(1, args.num_classes):
+                        loss_temp = loss_func(outputs[:, index].unsqueeze(dim=-1),
+                                              torch.tensor(labels[:, index].unsqueeze(dim=-1), dtype=torch.float))
+                        loss_temp = torch.where((labels >= 0)[:, index].unsqueeze(axis=-1), loss_temp,
+                                                torch.zeros_like(loss_temp)).mean()
+                        loss += loss_temp
 
                 # backward + optimize only if in training phase
                 if phase == 'train':
@@ -121,12 +143,13 @@ def training(model, args):
                     iter_num += 1
 
                 running_loss += loss.item()
+                loss_list.append(loss.item())
                 outputs = outputs.detach().to('cpu').numpy()
                 labels = labels.detach().to('cpu').numpy()
 
                 for i in range(outputs.shape[0]):
-                    output_list.append(outputs[i].tolist())
-                    label_list.append(labels[i].tolist())
+                    output_list.append(np.where(labels[i] >= 0, outputs[i], 0).tolist())
+                    label_list.append(np.where(labels[i] >= 0, labels[i], 0).tolist())
 
                 # Saving logs
                 if idx % 100 == 0 and idx != 0:
@@ -136,6 +159,8 @@ def training(model, args):
                             auc = roc_auc_score(np.array(label_list[-100 * args.batch_size:]),
                                                 np.array(output_list[-100 * args.batch_size:]))
                             writer.add_scalar('auc/train_batch', auc, iter_num)
+                            print('\nAUC/Train', auc)
+                            print('Batch Loss', sum(loss_list) / len(loss_list))
                         except:
                             pass
 
@@ -144,6 +169,13 @@ def training(model, args):
             try:
                 epoch_auc_ave = roc_auc_score(np.array(label_list), np.array(output_list))
                 epoch_auc = roc_auc_score(np.array(label_list), np.array(output_list), average=None)
+            except ValueError:
+                epoch_auc_ave = roc_auc_score(np.array(label_list)[:, :12], np.array(output_list)[:, :12]) * (12 / 13) + \
+                                roc_auc_score(np.array(label_list)[:, 13], np.array(output_list)[:, 13]) * (1 / 13)
+                epoch_auc = roc_auc_score(np.array(label_list)[:, :12], np.array(output_list)[:, :12], average=None)
+                epoch_auc = np.append(epoch_auc, 0)
+                epoch_auc = np.append(epoch_auc, roc_auc_score(np.array(label_list)[:, 13], np.array(output_list)[:, 13], average=None))
+
             except:
                 epoch_auc_ave = 0
                 epoch_auc = [0 for _ in range(len(class_names))]
@@ -193,8 +225,13 @@ def training(model, args):
         time_elapsed // 60, time_elapsed % 60))
     print('Best val AUC: {:4f}'.format(best_auc_ave))
     print()
-    for i, c in enumerate(class_names):
-        print('{}: {:.4f} '.format(c, best_auc[i]))
+    try:
+        for i, c in enumerate(class_names):
+            print('{}: {:.4f} '.format(c, best_auc[i]))
+    except:
+        for i, c in enumerate(class_names):
+            print('{}: {:.4f} '.format(c, epoch_auc[i]))
+
 
     # load best model weights to return
     model.load_state_dict(best_model_wts)
@@ -264,11 +301,12 @@ def training_abnormal(model, args):
             # Iterate over data.
             for idx, data in enumerate(tqdm(dataloaders[phase])):
 
-
                 images, labels, names = data
                 images = images.to(device)
                 labels = labels.to(device)
                 labels = labels.unsqueeze(axis=1)
+                # if labels.sum() == 0:
+                #     continue
 
                 # calculate weight for loss
                 P, N = 0, 0
@@ -540,5 +578,3 @@ def training_PCAM(model, args):
     model.load_state_dict(best_model_wts)
 
     return model
-
-

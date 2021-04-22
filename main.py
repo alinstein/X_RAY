@@ -12,6 +12,13 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     if args.multi_label:
+        if args.dataset == 'NIH':
+            args.num_classes = 8
+        elif args.dataset == 'ChesXpert':
+            args.num_classes = 5
+        else:
+            assert "Wrong Dataset"
+
         print("\n\n Configrations \n Backbone : {} \n Attention used :{} \n Number of classes : {}"
               "\n Global Pooling method :{} \n\n".format(args.backbone, args.attention_map,
                                                          args.num_classes, args.global_pool))
@@ -22,6 +29,7 @@ if __name__ == '__main__':
             model = DataParallel(model)
         model.to(device)
         training(model, args)
+        eval_function(args, model)
 
     elif not args.multi_label:
         args.num_classes = 1

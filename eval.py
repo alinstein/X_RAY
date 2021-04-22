@@ -10,10 +10,9 @@ from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix, hamming_
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-from dataset.dataset import CXRDataset, CXRDatasetBinary
+from dataset.dataset import CXRDataset, CXRDatasetBinary, ImageDataset
 from utlis.utils import model_name, select_model
 from config import parser
-
 
 
 def Find_Optimal_Cutoff(target, predicted):
@@ -36,9 +35,13 @@ def Find_Optimal_Cutoff(target, predicted):
 def compute_stats(gt, pred, cfg):
     if cfg.num_classes == 1:
         CLASS_NAMES = ['Disease']
-    else:
+    elif cfg.dataset == 'NIH':
         CLASS_NAMES = ['Atelectasis', 'Cardiomegaly', 'Effusion', 'Infiltration',
                        'Mass', 'Nodule', 'Pneumonia', 'Pneumothorax']
+    elif cfg.dataset == 'ChesXpert':
+        CLASS_NAMES = ['Atelectasis', 'Edema', 'Cardiomegaly', 'Consolidation', 'Pleural Effusion']
+    else:
+        assert "Wrong dataset"
     N_CLASSES = len(CLASS_NAMES)
     AUROCs = []
     roc_curves = []
@@ -56,25 +59,34 @@ def compute_stats(gt, pred, cfg):
     TPR_list = []
     TNR_list = []
     PPV_list = []
+    F1_list = []
 
     TPR_dict = {}
     TNR_dict = {}
     PPV_dict = {}
+    F1_dict = {}
     Hamming_loss = []
     for i in range(N_CLASSES):
         if cfg.num_classes == 1:
-            opt_threh = Find_Optimal_Cutoff(gt_np, pred_np)
+            opt_threh = 0.5  # Find_Optimal_Cutoff(gt_np, pred_np)
             confusion_matrix_ = confusion_matrix(gt_np.astype(int), pred_np >= opt_threh)
             Hamming_loss.append(hamming_loss(gt_np.astype(int), pred_np >= opt_threh))
         else:
             opt_threh = Find_Optimal_Cutoff(gt_np[:, i], pred_np[:, i])
             confusion_matrix_ = confusion_matrix(gt_np[:, i].astype(int), pred_np[:, i] >= opt_threh)
             Hamming_loss.append(hamming_loss(gt_np[:, i].astype(int), pred_np[:, i] >= opt_threh))
-        FP = (confusion_matrix_.sum(axis=0) - np.diag(confusion_matrix_))
-        FN = (confusion_matrix_.sum(axis=1) - np.diag(confusion_matrix_))
-        TP = np.diag(confusion_matrix_)
-        TN = (confusion_matrix_.sum() - (FP + FN + TP))
 
+        TN = confusion_matrix_[0, 0]
+        FP = confusion_matrix_[0, 1]
+        FN = confusion_matrix_[1, 0]
+        TP = confusion_matrix_[1, 1]
+
+        # FP = (confusion_matrix_.sum(axis=0) - np.diag(confusion_matrix_))
+        # FN = (confusion_matrix_.sum(axis=1) - np.diag(confusion_matrix_))
+        # TP = np.diag(confusion_matrix_)
+        # TN = (confusion_matrix_.sum() - (FP + FN + TP))
+
+        print("Accuracy :", (TP + TN) / len(gt_np))
         # Sensitivity, hit rate, recall, or true positive rate
         TPR = TP / (TP + FN)
         TPR_list.append(TPR)
@@ -88,11 +100,17 @@ def compute_stats(gt, pred, cfg):
         PPV_list.append(PPV)
         PPV_dict[CLASS_NAMES[i]] = PPV
 
-    mean_TPR = sum(np.array(TPR_list)[:, 1]) / N_CLASSES
-    mean_TNR = sum(np.array(TNR_list)[:, 1]) / N_CLASSES
-    mean_PPV = sum(np.array(PPV_list)[:, 1]) / N_CLASSES
+        # F1 score
+        F1_score = TP / (TP + 0.5 * (FP + FN))
+        F1_list.append(F1_score)
+        F1_dict[CLASS_NAMES[i]] = F1_score
+
+    mean_TPR = sum(np.array(TPR_list)[:]) / N_CLASSES
+    mean_TNR = sum(np.array(TNR_list)[:]) / N_CLASSES
+    mean_PPV = sum(np.array(PPV_list)[:]) / N_CLASSES
+    mean_F1 = sum(np.array(F1_list)[:]) / N_CLASSES
     mean_Hamming_loss = sum(Hamming_loss) / N_CLASSES
-    return AUROCs, roc_curves, mean_TPR, mean_TNR, mean_PPV, PPV_dict, TNR_dict, TPR_dict, mean_Hamming_loss
+    return AUROCs, roc_curves, mean_TPR, mean_TNR, mean_PPV, mean_F1, F1_dict, PPV_dict, TNR_dict, TPR_dict, mean_Hamming_loss
 
 
 def eval_function(args, model):
@@ -107,21 +125,30 @@ def eval_function(args, model):
     curve_path = "ROC Curves/"
     if args.num_classes == 1:
         CLASS_NAMES = ['Disease']
-    else:
+    elif args.dataset == 'NIH':
         CLASS_NAMES = ['Atelectasis', 'Cardiomegaly', 'Effusion', 'Infiltration',
                        'Mass', 'Nodule', 'Pneumonia', 'Pneumothorax']
+    elif args.dataset == 'ChesXpert':
+        CLASS_NAMES = ['Atelectasis', 'Edema', 'Cardiomegaly', 'Consolidation', 'Pleural Effusion']
+    else:
+        assert "Wrong dataset"
     trans = transforms.Compose([
-        transforms.Resize(args.img_size),
+        transforms.Resize((args.img_size,args.img_size)),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
     current_location = os.getcwd()
     data_root_dir = os.path.join(current_location, 'dataset')
     if args.multi_label:
-        datasets = CXRDataset(data_root_dir, dataset_type='test', Num_classes=args.num_classes,
-                              img_size=args.img_size, transform=trans)
+        if args.dataset == 'NIH':
+            datasets = CXRDataset(data_root_dir, dataset_type='test', Num_classes=args.num_classes,
+                                  img_size=args.img_size, transform=trans)
+        elif args.dataset == 'ChesXpert':
+            datasets = ImageDataset(args.data_root_dir, dataset_type='valid', Num_classes=args.num_classes,
+                                    transform=trans)
+
     else:
-        datasets = CXRDatasetBinary(data_root_dir, dataset_type='test1',
+        datasets = CXRDatasetBinary(data_root_dir, dataset_type='val',
                                     img_size=args.img_size, transform=trans)
 
     dataloader = DataLoader(datasets, batch_size=args.batch_size,
@@ -156,7 +183,7 @@ def eval_function(args, model):
                 output = model(inputs)
         pred = torch.cat((pred, output.data), 0)
 
-    AUROCs, roc_curves, mean_TPR, mean_TNR, mean_PPV, PPV_dict, TNR_dict, TPR_dict, mean_Hamming_loss \
+    AUROCs, roc_curves, mean_TPR, mean_TNR, mean_PPV, mean_F1, F1_dict, PPV_dict, TNR_dict, TPR_dict, mean_Hamming_loss \
         = compute_stats(gt, pred, args)
 
     AUROC_avg: None = np.array(AUROCs).mean()
@@ -167,6 +194,7 @@ def eval_function(args, model):
     print("Micro-averaging Precison is {} ".format(mean_PPV))
     print("Micro-averaging Recall or Sensitivity is {} ".format(mean_TPR))
     print("Micro-averaging Specificity is {} ".format(mean_TNR))
+    print("Micro-averaging F1 score is {} ".format(mean_F1))
 
     for i in range(N_CLASSES):
         print('The Precison of {} is {}'.format(CLASS_NAMES[i], PPV_dict[CLASS_NAMES[i]]))
@@ -174,6 +202,8 @@ def eval_function(args, model):
         print('The Recall or Sensitivity of {} is {}'.format(CLASS_NAMES[i], TPR_dict[CLASS_NAMES[i]]))
     for i in range(N_CLASSES):
         print('The Specificity of {} is {}'.format(CLASS_NAMES[i], TNR_dict[CLASS_NAMES[i]]))
+    for i in range(N_CLASSES):
+        print('The F1 score of {} is {}'.format(CLASS_NAMES[i], F1_dict[CLASS_NAMES[i]]))
 
     for i in range(N_CLASSES):
         fpr, tpr, thresholds = roc_curves[i]
@@ -210,8 +240,9 @@ if __name__ == '__main__':
     else:
         model = model
     current_location = os.getcwd()
-    pathModel = os.path.join(current_location, "savedModels", "compute",
-                             "ResNet18_True_AVG_IMG_SIZE_224_num_class_8_checkpoint.pth")
+    # "compute",
+    pathModel = os.path.join(current_location, "savedModels",
+                             "densenet121_True_MAX_IMG_SIZE_512_num_class_8_best_model.pth")
     modelCheckpoint = torch.load(pathModel)
     if num_GPU > 1:
         model.module.load_state_dict(modelCheckpoint['model_state_dict'])

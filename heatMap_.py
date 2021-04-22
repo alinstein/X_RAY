@@ -11,12 +11,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pandas import DataFrame
 
-from train import parser, select_model
+from config import parser
+
+
 from dataset.dataset import CXRDataset
 import matplotlib.patches as patches
 from utlis.gradcam import Grad_CAM, Grad_CAMpp
 from model.model import PCAM_Model
-from utlis.utils import visualize_cam
+from utlis.utils import visualize_cam, select_model
 
 
 class HeatmapGenerator:
@@ -213,10 +215,10 @@ class HeatmapGenerator:
         else:
             new_name = "test_1.xlsx"
 
-        print("______________________________________")
+        print('-' * 10)
         print("           " + str(test_name))
         print("Test name: ", new_name)
-        print("______________________________________")
+        print('-' * 10)
 
         metric_name = ["Mean of iou"]
         metric_value = [round(np.mean(iou_list), 3)]

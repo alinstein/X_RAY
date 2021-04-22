@@ -52,7 +52,7 @@ class DenseNet121(nn.Module):
         self.cfg = cfg
         self.pool = GlobalPool(cfg)
         self.drop = nn.Dropout(0.5)
-        self.FF = torch.nn.Sequential(nn.Conv2d(self.num_ftrs, self.num_outputs, kernel_size=1,
+        self.img_model.classifier = torch.nn.Sequential(nn.Conv2d(self.num_ftrs, self.num_outputs, kernel_size=1,
                                                 stride=1, padding=0, bias=True))
         self.sig = nn.Sigmoid()
         if cfg.attention_map:
@@ -68,14 +68,14 @@ class DenseNet121(nn.Module):
         :return x: probability of each disease [size N X 8]
         """
         feat_map = x
-        for k, v in self.img_model.features._modules.items():
-            feat_map = v(feat_map)
-            if self.cfg.attention_map:
-                feat_map = self.attention_map(feat_map)
+        # for k, v in self.img_model.features._modules.items():
+        #     feat_map = v(feat_map)
+        #     if self.cfg.attention_map:
+        #         feat_map = self.attention_map(feat_map)
         feat_map = self.img_model.features(x)
         x = self.pool(feat_map)
         x = self.drop(x)
-        x = self.FF(x)
+        x = self.img_model.classifier(x)
         x = self.sig(x)
         if len(x.shape) > 2:
             x = torch.squeeze(x, -1)
