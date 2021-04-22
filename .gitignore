@@ -31,3 +31,8 @@ Training.ipynb
 
 
 
+/dataset/chexpert/CheXpert-v1.0-small/train/
+/dataset/chexpert/CheXpert-v1.0-small/valid/
+/dataset/.ipynb_checkpoints/
+/dataset/new labels/
+/dataset/old_labels/

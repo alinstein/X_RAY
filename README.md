@@ -51,4 +51,23 @@ Following are implemented in this repository:
 
 ----------------------------------------------
 ### Reference
-Xiaosong Wang, Yifan Peng, Le Lu, Zhiyong Lu, Mohammadhadi Bagheri, Ronald M. Summers. ChestX-ray8: [Hospital-scale Chest X-ray Database and Benchmarks on Weakly- Supervised Classification and Localization of Common Thorax Diseases](https://arxiv.org/pdf/1705.02315.pdf), IEEE CVPR, pp. 3462-3471,2017
+[1] Xiaosong Wang, Yifan Peng, Le Lu, Zhiyong Lu, Mohammadhadi Bagheri, Ronald M. Summers. ChestX-ray8: [Hospital-scale Chest X-ray Database and Benchmarks on Weakly- Supervised Classification and Localization of Common Thorax Diseases](https://arxiv.org/pdf/1705.02315.pdf), IEEE CVPR, pp. 3462-3471,2017
+
+[2] J. Irvin, P Rajpurkar, M Ko, Yifan Yu, S Ciurea-Ilcus, C Chute, H Marklund, B Haghgoo, R Ball, K
+Shpanskaya, J Seekins, David A. Mong, S S. Halabi, Jesse K. S, Ricky J, David B. L, Curtis P. L, Bhavik N. P, 
+Matthew P. L, and Andrew Y. Ng. “CheXpert: A Large Chest Radiograph Dataset With Uncertainty Labels 
+and Expert Comparison”. Proceedings of the AAAI Conference on Artificial Intelligence 33 (01):590-97,2019. [Link](https://arxiv.org/pdf/1901.07031.pdf)
+
+[3] B. Zhou, A. Khosla, A. Lapedriza, A. Oliva and A. Torralba, "Learning Deep Features for Discriminative 
+Localization," 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Las Vegas, NV, 
+2016, pp. 2921-2929, doi: 10.1109/CVPR.2016.319. [Link](https://arxiv.org/pdf/1512.04150.pdf)
+
+[4] R. R. Selvaraju, M. Cogswell, A. Das, R. Vedantam, D. Parikh and D. Batra, "Grad-CAM: Visual 
+explanations from deep networks via gradient-based localization," 2017 IEEE International Conference 
+on Computer Vision (ICCV), Venice, 2017, pp. 618-626, doi: 10.1109/ICCV.2017.74.
+[Link](https://openaccess.thecvf.com/content_ICCV_2017/papers/Selvaraju_GradCAM_Visual_Explanations_ICCV_2017_paper.pdf)
+
+[5] A. Chattopadhay, A. Sarkar, P. Howlader and V. N. Balasubramanian, "Grad-CAM++: Generalized 
+gradient-based visual explanations for deep convolutional networks," 2018 IEEE Winter Conference on 
+Applications of Computer Vision (WACV), Lake Tahoe, NV, 2018, pp. 839-847, doi: 10.1
+109/WACV.2018.00097. 1710.11063v3.pdf (arxiv.org) [Link](https://arxiv.org/pdf/1710.11063.pdf)
