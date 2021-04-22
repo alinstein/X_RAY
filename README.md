@@ -45,10 +45,9 @@ Following are implemented in this repository:
 
 
 6. To generate a heatmap of the disease, give CNN model's location in main function in heatMap_.py 
-   and check the configuration in config.py. Run the following :  
-   
+   and check the configuration in config.py. Run the following :
 
-    python heatMap_.py
+         python heatMap_.py
 
 ----------------------------------------------
 ### Reference

@@ -85,8 +85,8 @@ def training(model, args):
             # Iterate over data.
             for idx, data in enumerate(tqdm(dataloaders[phase])):
 
-                if iter_num > 100 and phase == 'train':
-                    break
+                # if iter_num > 100 and phase == 'train':
+                #     break
 
                 images, labels, names = data
                 images = images.to(device)
